@@ -1,4 +1,4 @@
-import {Field, Poseidon} from 'o1js';
+import PrimeField from './primeField';
 import Fp2 from './fp2';
 import Fp6 from './fp6';
 
@@ -13,13 +13,19 @@ export default class Fp12{
         this.c1 = c1;
     }
 
-    /*zero() {
+    static zero() {
+        return new Fp12(
+            Fp6.zero(),
+            Fp6.zero()
+        );
+    }
 
-    }*/
-
-    /*one() {
-
-    }*/
+    static one() {
+        return new Fp12(
+            Fp6.one(),
+            Fp6.zero()
+        );
+    }
 
     add(y: Fp12) {
         return new Fp12(
@@ -100,26 +106,26 @@ export default class Fp12{
 
     isZero() {
         this.c0.assertEquals(new Fp6(
-            new Fp2(Field(0), Field(0)),
-            new Fp2(Field(0), Field(0)),
-            new Fp2(Field(0), Field(0))));
+            new Fp2(new PrimeField(0n), new PrimeField(0n)),
+            new Fp2(new PrimeField(0n), new PrimeField(0n)),
+            new Fp2(new PrimeField(0n), new PrimeField(0n))));
         
         this.c1.assertEquals(new Fp6(
-            new Fp2(Field(0), Field(0)),
-            new Fp2(Field(0), Field(0)),
-            new Fp2(Field(0), Field(0))));  
+            new Fp2(new PrimeField(0n), new PrimeField(0n)),
+            new Fp2(new PrimeField(0n), new PrimeField(0n)),
+            new Fp2(new PrimeField(0n), new PrimeField(0n))));  
     }
 
     isOne() {
         this.c0.assertEquals(new Fp6(
-            new Fp2(Field(1), Field(0)),
-            new Fp2(Field(0), Field(0)),
-            new Fp2(Field(0), Field(0))));
+            new Fp2(new PrimeField(1n), new PrimeField(0n)),
+            new Fp2(new PrimeField(0n), new PrimeField(0n)),
+            new Fp2(new PrimeField(0n), new PrimeField(0n))));
         
         this.c1.assertEquals(new Fp6(
-            new Fp2(Field(0), Field(0)),
-            new Fp2(Field(0), Field(0)),
-            new Fp2(Field(0), Field(0))));  
+            new Fp2(new PrimeField(0n), new PrimeField(0n)),
+            new Fp2(new PrimeField(0n), new PrimeField(0n)),
+            new Fp2(new PrimeField(0n), new PrimeField(0n))));  
     }
 
     invert() {

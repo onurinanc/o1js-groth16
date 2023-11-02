@@ -2,7 +2,9 @@ import {Field, Group, Poseidon} from 'o1js';
 import Fp12 from './fp12';
 import Fp6 from './fp6';
 import Fp2 from './fp2';
-import G2Group from './g2';
+import G2Group from './g2_depreceated';
+import { NAF_DIGIT } from './const';
+import { assertPreconditionInvariants } from 'o1js/dist/node/lib/precondition';
 
 class LineEval {
     L: Fp12
@@ -198,5 +200,57 @@ export default class Pairing{
         return t1;
     }
 
-    
+    static miller_loop(Q: G2Group, P:Group) {
+        let ate_loop_count = 29793968203157093288;
+        let log_ate_loop_count = 63;
+        let T = Q;
+        let f = Fp12.one();
+
+        for (let i = 0; i > 64; i++) {
+            let line_evaluated = Pairing.line_function_double_point(T, P);
+            f = f.square();
+            f = f.mul(line_evaluated.L);
+            T = line_evaluated.T;
+
+            if (NAF_DIGIT[i] == 2) {
+                let Q_NEG = Q.neg();
+                let line_evaluated = Pairing.line_function_add_point(T, Q_NEG, P);
+                f = f.mul(line_evaluated.L);
+                T = line_evaluated.T;
+            } else if (NAF_DIGIT[i] == 1) {
+                let line_evaluated = Pairing.line_function_add_point(T, Q, P);
+                f = f.mul(line_evaluated.L);
+                T = line_evaluated.T;
+            }
+        }
+
+        let q1x = Q.x.conjugate();
+        let q1y = Q.y.conjugate();
+        q1x = q1x.mul_by_non_residue_1_power_2();
+        q1y = q1y.mul_by_non_residue_1_power_3();
+        let Q1 = G2Group.fromAffine(q1x, q1y);
+
+        // Q2 <- pi_p_square(Q);
+        let q2x = Q.x.mul_by_non_residue_2_power_2();
+        let q2y = Q.y.mul_by_non_residue_2_power_3();
+        q2y = q2y.neg();
+        // Q2 is negated above to use directly in the line_function
+        let Q2 = G2Group.fromAffine(q2x, q2y);
+
+        // Line eval with Q1
+        let line_evaluated = Pairing.line_function_add_point(T, Q1, P);
+        f = f.mul(line_evaluated.L);
+        T = line_evaluated.T;
+
+        // Line eval with Q2
+        line_evaluated = Pairing.line_function_add_point(T, Q2, P);
+        f = f.mul(line_evaluated.L);
+        return f;
+    }
+
+    static pair(Q: G2Group, P: Group) {
+        let res = this.miller_loop(Q, P);
+        res = this.final_exponentiation(res);
+        return res;
+    }
 }

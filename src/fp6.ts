@@ -1,5 +1,5 @@
-import {Field, Poseidon} from 'o1js';
 import Fp2 from './fp2';
+import PrimeField from './primeField';
 
 export default class Fp6{
     // c0 + c1 * v + c2 * v^2
@@ -14,13 +14,21 @@ export default class Fp6{
         this.c2 = c2;
     }
 
-    /*zero() {
+    static zero() {
+        return new Fp6(
+            Fp2.zero(),
+            Fp2.zero(),
+            Fp2.zero()
+        );
+    }
 
-    }*/
-
-    /*one() {
-
-    }*/
+    static one() {
+        return new Fp6(
+            Fp2.one(),
+            Fp2.zero(),
+            Fp2.zero()
+        );
+    }
 
     add(y: Fp6) {
         return new Fp6(
@@ -133,52 +141,56 @@ export default class Fp6{
     }
 
     isZero() {
-        this.c0.assertEquals(new Fp2(Field(0), Field(0)));
-        this.c1.assertEquals(new Fp2(Field(0), Field(0)));
-        this.c2.assertEquals(new Fp2(Field(0), Field(0)));
+        this.c0.assertEquals(new Fp2(new PrimeField(0n), new PrimeField(0n)));
+        this.c1.assertEquals(new Fp2(new PrimeField(0n), new PrimeField(0n)));
+        this.c2.assertEquals(new Fp2(new PrimeField(0n), new PrimeField(0n)));
     }
 
     isOne() {
-        this.c0.assertEquals(new Fp2(Field(1), Field(0)));
-        this.c0.assertEquals(new Fp2(Field(0), Field(0)));
-        this.c0.assertEquals(new Fp2(Field(0), Field(0)));
+        this.c0.assertEquals(new Fp2(new PrimeField(1n), new PrimeField(0n)));
+        this.c1.assertEquals(new Fp2(new PrimeField(0n), new PrimeField(0n)));
+        this.c2.assertEquals(new Fp2(new PrimeField(0n), new PrimeField(0n)));
     }
 
-    // Algorithm 17 from: https://eprint.iacr.org/2010/354.pdf
-    // this won't work due to Pallas
     invert() {
-        let t0 = this.c0.square();
-        let t1 = this.c1.square();
-        let t2 = this.c2.square();
+        let c0 = this.c2;
+        c0 = c0.mul_by_nonresidue();
+        c0 = c0.mul(this.c1);
+        c0 = c0.neg();
 
-        let t3 = this.c0.mul(this.c1);
-        let t4 = this.c0.mul(this.c2);
-        let t5 = this.c2.mul(this.c1);
+        let c0s = this.c0;
+        c0s = c0s.square();
+        c0 = c0.add(c0s);
 
-        let tmp = t5.mul_by_nonresidue();
-        let c0 = t0.sub(tmp);
-        
-        tmp = t2.mul_by_nonresidue();
-        let c1 = tmp.sub(t3);
+        let c1 = this.c2;
+        c1 = c1.square();
+        c1 = c1.mul_by_nonresidue();
 
-        let c2 = t1.mul(t4);
+        let c01 = this.c0;
+        c01 = c01.mul(this.c1);
+        c1 = c1.sub(c01);
 
-        let t6 = this.c0.mul(c0);
+        let c2 = this.c1;
+        c2 = c2.square();
+        let c02 = this.c0;
+        c02 = c02.mul(this.c2);
+        c2 = c2.sub(c02);
 
-        tmp = this.c2.mul(c1);
-        tmp = tmp.mul_by_nonresidue();
-        t6 = t6.add(tmp);
+        let tmp1 = this.c2;
+        tmp1 = tmp1.mul(c1);
+        let tmp2 = this.c1;
+        tmp2 = tmp2.mul(c2);
+        tmp1 = tmp1.add(tmp2);
+        tmp1 = tmp1.mul_by_nonresidue();
+        tmp2 = this.c0;
+        tmp2 = tmp2.mul(c0);
+        tmp1 = tmp1.add(tmp2);
 
-        tmp = this.c1.mul(c2);
-        tmp = tmp.mul_by_nonresidue();
-        t6 = t6.add(tmp);
+        let tmp = tmp1.invert();
+        c0 = tmp.mul(c0);
+        c1 = tmp.mul(c1);
+        c2 = tmp.mul(c2);
 
-        t6 = t6.invert();
-
-        c0 = c0.mul(t6);
-        c1 = c1.mul(t6);
-        c2 = c2.mul(t6);
-        
         return new Fp6(
             c0,
             c1,

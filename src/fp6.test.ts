@@ -1,4 +1,4 @@
-import {Field, Poseidon, Group} from 'o1js';
+import PrimeField from './primeField';
 import Fp2 from './fp2';
 import Fp6 from './fp6';
 
@@ -7,9 +7,9 @@ describe('test fp6', function() {
   it('new', function() {
     console.log("Construct a new Fp6");
     
-    let x = new Fp2(Field(20), Field(10));
-    let y = new Fp2(Field(12), Field(15));
-    let z = new Fp2(Field(25), Field(40));
+    let x = new Fp2(new PrimeField(20n), new PrimeField(10n));
+    let y = new Fp2(new PrimeField(12n), new PrimeField(15n));
+    let z = new Fp2(new PrimeField(25n), new PrimeField(40n));
 
     let x1 = new Fp6(x, y, z);
     let x2 = new Fp6(x, x, y);
@@ -23,7 +23,7 @@ describe('test fp6', function() {
     console.log(x1.c2.c1);
 
     console.log("Construct a zero Fp6");
-    let zero_fp2 = new Fp2(Field(0), Field(0));
+    let zero_fp2 = new Fp2(new PrimeField(0n), new PrimeField(0n));
     let zero_fp6 = new Fp6(zero_fp2, zero_fp2, zero_fp2);
 
     console.log(zero_fp6.c0.c0);
@@ -37,9 +37,9 @@ describe('test fp6', function() {
   // a + (b + c) == a + (c + b) == b + (c + a)
   it('Add Fp6', function() {
     console.log("Add three Fp6");
-    let x = new Fp2(Field(20), Field(10));
-    let y = new Fp2(Field(12), Field(15));
-    let z = new Fp2(Field(25), Field(40));
+    let x = new Fp2(new PrimeField(20n), new PrimeField(10n));
+    let y = new Fp2(new PrimeField(12n), new PrimeField(15n));
+    let z = new Fp2(new PrimeField(25n), new PrimeField(40n));
 
     let x1 = new Fp6(x, y, z);
     let x2 = new Fp6(x, x, y);
@@ -63,9 +63,9 @@ describe('test fp6', function() {
   // a * (b * c) == a * (c * b) = b * (c * a)
   it('Mul Fp6', function() {
     console.log("Mul three Fp6");
-    let x = new Fp2(Field(20), Field(10));
-    let y = new Fp2(Field(12), Field(15));
-    let z = new Fp2(Field(25), Field(40));
+    let x = new Fp2(new PrimeField(20n), new PrimeField(10n));
+    let y = new Fp2(new PrimeField(12n), new PrimeField(15n));
+    let z = new Fp2(new PrimeField(25n), new PrimeField(40n));
 
     let x1 = new Fp6(x, y, z);
     let x2 = new Fp6(x, x, y);
@@ -86,18 +86,38 @@ describe('test fp6', function() {
     t1.c2.assertEquals(t2.c2);
   });
 
-  // a + a == 2*a
+  // a * a == 2*a
   it('Square Fp6', function() {
     console.log("Square one Fp6");
+    let x = new Fp2(new PrimeField(20n), new PrimeField(10n));
+    let y = new Fp2(new PrimeField(12n), new PrimeField(15n));
+    let z = new Fp2(new PrimeField(25n), new PrimeField(40n));
+    
+    let x1 = new Fp6(x, y, z);
+    
+    let a = x1.mul(x1);
+    let b = x1.square();
+
+    a.assertEquals(b);
+
+    console.log(a);
+    console.log(b);
+    console.log(a.assertEquals(b));
     
   });
 
-  // a*a^-1 == O
-  // Here, we test for the Pallas Curve
-  // Change it to BN254 later by using the following
-  // let a = new Fp2(Field(1), Field(2));
+  
   it('Invert Fp6', function() {
-    console.log("Invert the generator of Pallas");
+    console.log("Invert an element in Fp6");
+    let x = new Fp2(new PrimeField(20n), new PrimeField(10n));
+    let y = new Fp2(new PrimeField(12n), new PrimeField(15n));
+    let z = new Fp2(new PrimeField(25n), new PrimeField(40n));
+    
+    let a = new Fp6(x, y, z);
+    let b = a.invert();
+    let c = a.mul(b);
+
+    c.isOne();
   });
 
 });
