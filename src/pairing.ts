@@ -1,10 +1,10 @@
-import {Field, Group, Poseidon} from 'o1js';
 import Fp12 from './fp12';
 import Fp6 from './fp6';
 import Fp2 from './fp2';
-import G2Group from './g2_depreceated';
+import G2Group from './g2';
 import { NAF_DIGIT } from './const';
 import { assertPreconditionInvariants } from 'o1js/dist/node/lib/precondition';
+import G1Group from './g1';
 
 class LineEval {
     L: Fp12
@@ -21,7 +21,7 @@ export default class Pairing{
     static line_eval: [Fp12, G2Group];
 
     // Algorithm 26 from: https://eprint.iacr.org/2010/354.pdf
-    static line_function_double_point(q: G2Group, p: Group) {
+    static line_function_double_point(q: G2Group, p: G1Group) {
         let tmp0 = q.x.square();
         let tmp1 = q.y.square();
         let tmp2 = tmp1.square();
@@ -44,7 +44,8 @@ export default class Pairing{
         tmp2_8 = tmp2_8.double();
         tmp2_8 = tmp2_8.double();
         Y_T = Y_T.sub(tmp2_8);
-        tmp3 = tmp4.mul(q.z.double());
+        //tmp3 = tmp4.mul(q.z.double()); // Burası double değil square olacak.
+        tmp3 = tmp4.mul(q.z.square());
         tmp3 = tmp3.double();
         tmp3 = tmp3.neg();
         tmp3 = tmp3.mul_by_b0(p.x); 
@@ -75,11 +76,7 @@ export default class Pairing{
             a1,
         );
 
-        let T = new G2Group(
-            X_T,
-            Y_T,
-            Z_T,
-        )
+        let T = G2Group.to_affine(new G2Group(X_T, Y_T), Z_T);
 
         return new LineEval(
             l,
@@ -88,7 +85,7 @@ export default class Pairing{
     }
 
     // Algorithm 27 from: https://eprint.iacr.org/2010/354.pdf
-    static line_function_add_point(q: G2Group, r: G2Group, p: Group) {
+    static line_function_add_point(q: G2Group, r: G2Group, p: G1Group) {
         let t0 = q.x.mul(r.z.square());
         let t1 = q.y.add(r.z);
         t1 = t1.square();
@@ -144,17 +141,13 @@ export default class Pairing{
             l1,
         );
 
-        let T = new G2Group(
-            X_T,
-            Y_T,
-            Z_T
-        );
+        let T = G2Group.to_affine(new G2Group(X_T, Y_T), Z_T);
 
         return new LineEval(
             l,
             T
         );
-    }   
+    }
 
     static final_exponentiation(z: Fp12) {
         // Easy part
@@ -200,13 +193,70 @@ export default class Pairing{
         return t1;
     }
 
-    static miller_loop(Q: G2Group, P:Group) {
+    static final_exponentiation_2_gnark(z: Fp12) {
+        // Easy part
+
+        let result = z;
+        let t0 = z.conjugate();
+        result = result.invert();
+        t0 = t0.mul(result);
+        result = t0.frobenius_square();
+        result = result.mul(t0);
+
+        // Hard part
+        // https://eprint.iacr.org/2015/192.pdf
+
+        t0 = result.exponentiation();
+        t0 = t0.conjugate();
+        t0 = t0.cyclotomic_square();
+        let t1 = t0.cyclotomic_square();
+        t1 = t0.mul(t1);
+        let t2 = t1.exponentiation();
+        t2 = t2.conjugate();
+        let t3 = t1.conjugate();
+        t1 = t2.mul(t3);
+        t3 = t2.cyclotomic_square();
+        let t4 = t3.exponentiation();
+        t4 = t1.mul(t4);
+        t3 = t0.mul(t4);
+        t0 = t2.mul(t4);
+        t0 = t0.mul(result);
+        t2 = t3.frobenius();
+        t0 = t2.mul(t0);
+        t2 = t4.frobenius_square();
+        t0 = t2.mul(t0);
+        t2 = result.conjugate();
+        t2 = t2.mul(t3);
+        t2 = t2.frobenius_cube();
+        t0 = t2.mul(t0);
+
+        return t0;
+    }
+
+    /*static final_exponentiation_new(f: Fp12) {
+        let f1 = f.conjugate();
+        let f2 = f.invert();
+        f = f1.mul(f2);
+        f = f.frobenius_square().mul(f); // mul f var mı yok mu?
+        //let ft1 = f.exponentiation();
+        //let ft2 = f.exponentiation();
+        //let ft3
+        let fp1 = f.frobenius();
+        let fp2 = f.frobenius_square();
+        let fp3 = f.frobenius_cube();
+        let y0 = fp1.mul(fp2).mul(fp3);
+        let y1 = f1;
+        let y2 =   
+
+    }*/
+
+    static miller_loop(Q: G2Group, P:G1Group) {
         let ate_loop_count = 29793968203157093288;
         let log_ate_loop_count = 63;
         let T = Q;
         let f = Fp12.one();
 
-        for (let i = 0; i > 64; i++) {
+        for (let i = 0; i < 64; i++) {
             let line_evaluated = Pairing.line_function_double_point(T, P);
             f = f.square();
             f = f.mul(line_evaluated.L);
@@ -228,14 +278,16 @@ export default class Pairing{
         let q1y = Q.y.conjugate();
         q1x = q1x.mul_by_non_residue_1_power_2();
         q1y = q1y.mul_by_non_residue_1_power_3();
-        let Q1 = G2Group.fromAffine(q1x, q1y);
+        //let Q1 = G2Group.fromAffine(q1x, q1y);
+        let Q1 = new G2Group(q1x, q1y);
 
         // Q2 <- pi_p_square(Q);
         let q2x = Q.x.mul_by_non_residue_2_power_2();
         let q2y = Q.y.mul_by_non_residue_2_power_3();
         q2y = q2y.neg();
         // Q2 is negated above to use directly in the line_function
-        let Q2 = G2Group.fromAffine(q2x, q2y);
+        //let Q2 = G2Group.fromAffine(q2x, q2y);
+        let Q2 = new G2Group(q2x, q2y);
 
         // Line eval with Q1
         let line_evaluated = Pairing.line_function_add_point(T, Q1, P);
@@ -248,9 +300,69 @@ export default class Pairing{
         return f;
     }
 
-    static pair(Q: G2Group, P: Group) {
-        let res = this.miller_loop(Q, P);
-        res = this.final_exponentiation(res);
+    static new_miller_loop(Q: G2Group, P:G1Group) {
+        if(Q.isZero() || P.isZero()) {
+            return Fp12.one();
+        }
+
+        let R = Q;
+        let f = Fp12.one();
+
+        for(let i = 63; i > -1; i--) {
+            let line_evaluated = this.line_function_double_point(R, P); 
+            f = f.mul(f).mul(line_evaluated.L);
+            R = line_evaluated.T;
+            if (29793968203157093288 & (2**i)) {
+                let line_evaluated = this.line_function_add_point(R, Q, P);
+                f = f.mul(line_evaluated.L);
+                R = R.add(Q);
+            }
+        }
+
+        let q1x = Q.x.conjugate();
+        let q1y = Q.y.conjugate();
+        q1x = q1x.mul_by_non_residue_1_power_2();
+        q1y = q1y.mul_by_non_residue_1_power_3();
+        //let Q1 = G2Group.fromAffine(q1x, q1y);
+        let Q1 = new G2Group(q1x, q1y);
+
+        // Q2 <- pi_p_square(Q);
+        let q2x = Q.x.mul_by_non_residue_2_power_2();
+        let q2y = Q.y.mul_by_non_residue_2_power_3();
+        q2y = q2y.neg();
+        // Q2 is negated above to use directly in the line_function
+        //let Q2 = G2Group.fromAffine(q2x, q2y);
+        let Q2 = new G2Group(q2x, q2y);
+
+        // Line eval with Q1
+        let line_evaluated = Pairing.line_function_add_point(R, Q1, P);
+        f = f.mul(line_evaluated.L);
+        R = line_evaluated.T;
+
+        // Line eval with Q2
+        line_evaluated = Pairing.line_function_add_point(R, Q2, P);
+        f = f.mul(line_evaluated.L);
+        return f;
+    }
+
+    static pair(Q: G2Group, P: G1Group) {
+        let res = Pairing.miller_loop(Q, P);
+        res = this.final_exponentiation_2_gnark(res);
+        //res = this.final_exponentiation(res);
         return res;
     }
+
+    // new_miller_loop_test: 
+    // 4947317154039212424161228730094156662200671128105684755547588065693438310968
+    // 4498429767852986861166227158110591543825586580979294626332366971473013976019
+
+    // miller_loop_test:
+    // 4947317154039212424161228730094156662200671128105684755547588065693438310968
+    // 4498429767852986861166227158110591543825586580979294626332366971473013976019
+
+    // Bu şu anlama geliyor ki new_miller_loop ile miller_loop aynı ve bazı kısımları doğru çalışıyor. Looplu olanları.
+    
+    // miller_loop'ta bir sıkıntı olduğunu düşünmüyorum.
+    // fakat, final_exp'te bir sıkıntı var gibi çünkü sürekli (1, 1, 0, 0) -> buna bile (1, 0, 0) döndürdü.
+
 }

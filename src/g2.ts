@@ -4,12 +4,13 @@ import PrimeField from './primeField';
 export default class G2Group{   
     x: Fp2;
     y: Fp2;
+    z: Fp2;
 
     constructor(x: Fp2, y: Fp2) {
         // we can add checks later
         this.x = x;
         this.y = y;
-
+        this.z = Fp2.one();
         // on curve check
     }
 
@@ -35,6 +36,19 @@ export default class G2Group{
             new Fp2(new PrimeField(2725019753478801796453339367788033689375851816420509565303521482350756874229n), new PrimeField(7273165102799931111715871471550377909735733521218303035754523677688038059653n)),
             new Fp2(new PrimeField(2512659008974376214222774206987427162027254181373325676825515531566330959255n), new PrimeField(957874124722006818841961785324909313781880061366718538693995380805373202866n))
         )
+    }
+
+    static to_affine(p:G2Group, z: Fp2) {
+        let x_affine = p.x.div(z.square());
+        let y_affine = p.y.div(z.square().mul(z));
+
+        //console.log("HEY THIS IS Z");
+        //console.log(z);
+        
+        return new G2Group(
+            x_affine,
+            y_affine
+        ); 
     }
 
     assertEquals(p: G2Group, message?: string) {

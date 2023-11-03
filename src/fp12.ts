@@ -317,6 +317,9 @@ export default class Fp12{
 
         for (let i = 0; i < n; i++) {
             x = x.cyclotomic_square();
+            //console.log("cyclotomic")
+            //console.log(x.c0);
+            //console.log(x.c1);
         }
 
         return x;
