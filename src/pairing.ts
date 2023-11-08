@@ -189,6 +189,55 @@ export default class Pairing{
         let t7 = t4;
         t7 = t7.mul(r.x);
 
+        r.x = t6;
+        r.x = r.x.square();
+        r.x = r.x.sub(t5);
+        r.x = r.x.sub(t6);
+        r.x = r.x.sub(t7);
+
+        r.z = r.z.add(t2);
+        r.z = r.z.square();
+        r.z = r.z.sub(zsquared);
+        r.z = r.z.sub(t3);
+
+        let t10 = q.y;
+        t10 = t10.add(r.z);
+
+        let t8 = t7;
+        t8 = t8.sub(r.x);
+        t8 = t8.mul(t6);
+
+        t0 = r.y;
+        t0 = t0.mul(t5);
+        t0 = t0.double();
+
+        r.y = t8;
+        r.y = r.y.sub(t0);
+
+        t10 = t10.square();
+        t10 = t10.sub(ysquared);
+
+        let ztsquared = r.z;
+        ztsquared = ztsquared.square();
+
+        t10 = t10.sub(ztsquared);
+
+        t9 = t9.double();
+        t9 = t9.sub(t10);
+
+        t10 = r.z;
+        t10 = t10.double();
+
+        t6 = t6.neg();
+        
+        t1 = t6;
+        t1 = t1.double();
+
+        return new Fp6(
+            t10,
+            t1,
+            t9
+        );
     }
 
     /*static final_exponentiation(z: Fp12) {
