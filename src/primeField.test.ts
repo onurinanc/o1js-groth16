@@ -18,51 +18,61 @@ describe('test PrimeField', function() {
   //  console.log(11%5);
   //}); 
 
-  it('test PrimeField add', function() {
-    let x = new PrimeField(1n);
-    let y = new PrimeField(21888242871839275222246405745257275088696311157297823662689037894645226208583n);
-    let z = x.add(y);
-    console.log(z);
-  });
+  //it('test PrimeField add', function() {
+  //  let x = new PrimeField(1n);
+  //  let y = new PrimeField(21888242871839275222246405745257275088696311157297823662689037894645226208583n);
+  //  let z = x.add(y);
+  //  console.log(z);
+  //});
 
-  it('test PrimeField exp', function() {
-    let x = new PrimeField(1n);
-    let y = new PrimeField(21888242871839275222246405745257275088696311157297823662689037894645226208583n);
-    let z = x.exp(y);
-    console.log(z);
-
-    let base = new PrimeField(2n);
-    let exponent = new PrimeField(3n);
-    let res = base.exp(exponent);
-    console.log(res);
-  }); 
-
-  it('test assertEquals', function() {
-    let x = new PrimeField(1n);
+  it('new field element montgomery', function() {
+    let x = new PrimeField(2n);
     let y = new PrimeField(1n);
-    
-    x.assertEquals(y);
-  }); 
+    let mont_x = x.mul(new PrimeField(6350874878119819312338956282401532409788428879151445726012394534686998597021n));
+    let mont_y = y.mul(new PrimeField(6350874878119819312338956282401532409788428879151445726012394534686998597021n));
 
-  it('test inv and div', function() {
-    let x = new PrimeField(3451234123523542345345n);
-    let y = x.inv();
-
-    let res = x.mul(y);
-
-    let res_z = x.div(x);
-    console.log(res_z);
-    console.log(res);
-    //x.assertEquals(y);
-  }); 
-
-
-  it('test neg', function() {
-    console.log("testing neg");
-    let x = new PrimeField(3451234123523542345345n);
-    let y = x.neg();
-    let sum = x.add(y);
-    console.log(sum);
-    //x.assertEquals(y);
+    console.log(mont_x);
+    console.log(mont_y);
   });
+
+  //it('test PrimeField exp', function() {
+  //  let x = new PrimeField(1n);
+  //  let y = new PrimeField(21888242871839275222246405745257275088696311157297823662689037894645226208583n);
+  //  let z = x.exp(y);
+  //  console.log(z);
+//
+  //  let base = new PrimeField(2n);
+  //  let exponent = new PrimeField(3n);
+  //  let res = base.exp(exponent);
+  //  console.log(res);
+  //}); 
+//
+  //it('test assertEquals', function() {
+  //  let x = new PrimeField(1n);
+  //  let y = new PrimeField(1n);
+  //  
+  //  x.assertEquals(y);
+  //}); 
+//
+  //it('test inv and div', function() {
+  //  let x = new PrimeField(3451234123523542345345n);
+  //  let y = x.inv();
+//
+  //  let res = x.mul(y);
+//
+  //  let res_z = x.div(x);
+  //  console.log(res_z);
+  //  console.log(res);
+  //  //x.assertEquals(y);
+  //}); 
+//
+//
+  //it('test neg', function() {
+  //  console.log("testing neg");
+  //  let x = new PrimeField(3451234123523542345345n);
+  //  let y = x.neg();
+  //  let sum = x.add(y);
+  //  console.log(sum);
+  //  //x.assertEquals(y);
+  //});
 });

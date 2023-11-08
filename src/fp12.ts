@@ -238,6 +238,11 @@ export default class Fp12{
         );
     }
 
+    // Granger-Scott's cyclotomic square
+    // https://eprint.iacr.org/2009/565.pdf, 3.2
+
+    // Bunu kontrol ettik tamamen doğru çalışıyor.
+    // gnark-crypto'dan kontrol ettik
     cyclotomic_square() {
         let t0 = this.c1.c1.square();
         let t1 = this.c0.c0.square();
@@ -308,7 +313,7 @@ export default class Fp12{
         );
     }
 
-    // n: any?
+    // same with gnark
     n_square(n: any) {
         let x = new Fp12(
             this.c0,
@@ -317,14 +322,12 @@ export default class Fp12{
 
         for (let i = 0; i < n; i++) {
             x = x.cyclotomic_square();
-            //console.log("cyclotomic")
-            //console.log(x.c0);
-            //console.log(x.c1);
         }
 
         return x;
     } 
 
+    // Checked: totally same with the gnark
     exponentiation() {
         let t3 = this.cyclotomic_square();
         let t5 = t3.cyclotomic_square();
@@ -360,5 +363,28 @@ export default class Fp12{
         return result;
     }
 
+    mulBy034(c0: Fp2, c3: Fp2, c4: Fp2) {
+        let a = this.c0.mulByE2(c0);
+        
+        let b = this.c1;
+        // Check this line again! That might differ!
+        b = b.mulBy01(c0, c3);
+
+        c0 = c0.add(c3);
+        let d = this.c0.add(this.c1);
+        d = d.mulBy01(c0, c4);
+
+        let z_c1 = a.add(b);
+        z_c1 = z_c1.neg();
+        z_c1 = z_c1.add(d);
+
+        let z_c0 = b.mul_by_nonresidue();
+        z_c0 = z_c0.add(a);
+
+        return new Fp12(
+            z_c0,
+            z_c1
+        )
+    }
     
 }

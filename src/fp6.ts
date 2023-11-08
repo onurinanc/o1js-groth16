@@ -208,4 +208,95 @@ export default class Fp6{
             this.c1
         );
     }
+
+    mul_torus() {
+    }
+
+    mul_plus_one_b1(y: Fp6) {
+    }
+
+    // gnark-crypto
+    mulByE2(yCopy: Fp2) {
+        return new Fp6(
+            this.c0.mul(yCopy),
+            this.c1.mul(yCopy),
+            this.c2.mul(yCopy)
+        )
+    }
+
+    // gnark-crypto
+    mulBy12(b1: Fp2, b2: Fp2) {
+        let t1 = this.c1.mul(b1);
+        let t2 = this.c2.mul(b2);
+        let c0 = this.c2.mul(b2);
+        let tmp = b1.add(b2);
+        c0 = c0.mul(tmp);
+        c0 = c0.sub(t1);
+        c0 = c0.sub(t2);
+        c0 = c0.mul_by_nonresidue(); // Check this again! They might differ
+        let c1 = this.c0.add(this.c1);
+        c1 = c1.mul(b1);
+        c1 = c1.sub(t1);
+        tmp = t2.mul_by_nonresidue(); // Check this again!
+        c1 = c1.add(tmp);
+        tmp = this.c0.add(this.c2);
+        let c2 = b2.mul(tmp);
+        c2 = c2.sub(t2);
+        c2 = c2.add(t1);
+
+        return new Fp6(
+            c0,
+            c1,
+            c2
+        );
+    }
+
+    // gnark-crypto
+    mulBy01(c0: Fp2, c1: Fp2) {
+        let a = this.c0.mul(c0);
+        let b = this.c1.mul(c1);
+
+        let tmp = this.c1.add(this.c2);
+        let t0 = tmp.mul(c1);
+        t0 = t0.sub(b);
+        t0 = t0.mul_by_nonresidue();
+        t0 = t0.add(a);
+
+        tmp = this.c0.add(this.c2);
+        let t2 = tmp.mul(c0);
+        t2 = t2.sub(a);
+        t2 = t2.add(b);
+
+        let t1 = c0.add(c1);
+        tmp = this.c0.add(this.c1);
+        t1 = t1.mul(tmp);
+        t1 = t1.sub(a);
+        t1 = t1.sub(b);
+
+        return new Fp6(
+            t0,
+            t1,
+            t2
+        );
+    }
+
+    // gnark-crypto
+    mulBy1(c1: Fp2) {
+        let b = this.c1.mul(c1);
+
+        let tmp = this.c1.add(this.c2);
+        let t0 = c1.mul(tmp);
+        t0 = t0.sub(b);
+        t0 = t0.mul_by_nonresidue();
+
+        tmp = this.c0.add(this.c1);
+        let t1 = c1.mul(tmp);
+        t1 = t1.sub(b);
+
+        return new Fp6(
+            t0,
+            t1,
+            b
+        );
+    }
 }

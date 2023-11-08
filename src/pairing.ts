@@ -149,7 +149,49 @@ export default class Pairing{
         );
     }
 
-    static final_exponentiation(z: Fp12) {
+    static addition_step_halo2_curve(q: G2Group, r: G2Group) {
+        let zsquared = r.z;
+        zsquared = r.z.square();
+
+        let ysquared = q.y;
+        ysquared = ysquared.square();
+
+        let t0 = zsquared;
+        t0 = t0.mul(q.x);
+
+        let t1 = q.y;
+        t1 = t1.add(r.z);
+        t1 = t1.square();
+        t1 = t1.sub(ysquared);
+        t1 = t1.sub(zsquared);
+        t1 = t1.mul(zsquared);
+
+        let t2 = t0;
+        t2 = t2.sub(r.x);
+
+        let t3 = t2;
+        t3 = t3.square();
+
+        let t4 = t3;
+        t4 = t4.double();
+        t4 = t4.double();
+
+        let t5 = t4;
+        t5 = t5.mul(t2);
+
+        let t6 = t1;
+        t6 = t6.sub(r.y);
+        t6 = t6.sub(r.y);
+
+        let t9 = t6;
+        t9 = t9.mul(q.x);
+
+        let t7 = t4;
+        t7 = t7.mul(r.x);
+
+    }
+
+    /*static final_exponentiation(z: Fp12) {
         // Easy part
 
         let result = z;
@@ -191,9 +233,15 @@ export default class Pairing{
         t1 = t1.mul(t2);
 
         return t1;
-    }
+    }*/
 
-    static final_exponentiation_2_gnark(z: Fp12) {
+    // FinalExponentiation computes the exponentiation (∏ᵢ zᵢ)ᵈ
+    // where d = (p¹²-1)/r = (p¹²-1)/Φ₁₂(p) ⋅ Φ₁₂(p)/r = (p⁶-1)(p²+1)(p⁴ - p² +1)/r
+    // we use instead d=s ⋅ (p⁶-1)(p²+1)(p⁴ - p² +1)/r
+    // where s is the cofactor 2x₀(6x₀²+3x₀+1)
+    // Totally same with gnark
+
+    static final_exponentiation_gnark(z: Fp12) {
         // Easy part
 
         let result = z;
@@ -347,7 +395,7 @@ export default class Pairing{
 
     static pair(Q: G2Group, P: G1Group) {
         let res = Pairing.miller_loop(Q, P);
-        res = this.final_exponentiation_2_gnark(res);
+        res = this.final_exponentiation_gnark(res);
         //res = this.final_exponentiation(res);
         return res;
     }

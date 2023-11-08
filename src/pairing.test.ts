@@ -10,7 +10,7 @@ import Pairing from './pairing';
 describe('test pairing functions', function() {
   it('Test final exponentiation', function() {
     console.log("test fp12.one()");
-    let res = Pairing.final_exponentiation(Fp12.one());
+    let res = Pairing.final_exponentiation_gnark(Fp12.one());
     res.assertEquals(Fp12.one());
   });
 
@@ -26,41 +26,64 @@ describe('test pairing functions', function() {
     //let res = Pairing.final_exponentiation_2_gnark(ress);
     //console.log(res.c0);
     //console.log(res.c1);
+//
+    //let val = new Fp12(
+    //  new Fp6(
+    //    new Fp2(new PrimeField(1n).R(), new PrimeField(1n).R()),
+    //    new Fp2(new PrimeField(1n).R(), new PrimeField(1n).R()),
+    //    new Fp2(new PrimeField(1n).R(), new PrimeField(1n).R())
+    //  ),
+    //  new Fp6(
+    //    new Fp2(new PrimeField(1n).R(), new PrimeField(0n).R()),
+    //    new Fp2(new PrimeField(0n).R(), new PrimeField(0n).R()),
+    //    new Fp2(new PrimeField(0n).R(), new PrimeField(0n).R())
+    //  )
+    //)
 
-    let val = new Fp12(
-      new Fp6(
-        new Fp2(new PrimeField(1n), new PrimeField(1n)),
-        new Fp2(new PrimeField(1n), new PrimeField(1n)),
-        new Fp2(new PrimeField(1n), new PrimeField(1n))
-      ),
-      Fp6.one()
-    )
+    //let res = Pairing.final_exponentiation_gnark(val);
+    //console.log(res.c0);
+    //console.log(res.c1);
 
-    console.log(val.c0);
-    console.log(val.c1);
-    let res1 = Pairing.final_exponentiation(val);
-    console.log("Res1 final exp");
-    console.log(res1.c0);
-    console.log(res1.c1);
+    //console.log(val.c0);
+    //console.log(val.c1);
+    //let res1 = Pairing.final_exponentiation(val);
+    //console.log("Res1 final exp");
+    //console.log(res1.c0);
+    //console.log(res1.c1);
 
-    let res2 = Pairing.final_exponentiation_2_gnark(val);
-    console.log("Res2 final exp");
-    console.log(res2.c0);
-    console.log(res2.c1);
-
+    //let res2 = Pairing.final_exponentiation_2_gnark(val);
+    //console.log("Res2 final exp");
+    //console.log(res2.c0);
+    //console.log(res2.c1);
+    //let t = 2**62 - 2**54 + 2**44
+    //console.log("THE TRACE T is:");
+    //console.log(t);
+    //let t_another = 2**63 - 2**49
+    //// 4965661367192848881 -> t is in garaga/gnark
+    //// 4593689212103950300 -> t is in the optimal ate pairing
+    //console.log("This is another t");
+    //console.log(t_another);
   });
 
   // e(P, Q + R) = e(P, Q) * e(P, R)
-  //it('Test pair function', function() {
-  //  console.log("ttest bilinearity");
-  //  let g1_double = G1Group.generator().double();
-  //  let p_add_q = g1_double.add(G1Group.generator());
-  //  let lhs = Pairing.pair(G2Group.generator(), g1_double);
-  //  let rhs_1 = Pairing.pair(G2Group.generator(), G1Group.generator());
-  //  let rhs_2 = Pairing.pair(G2Group.generator(), g1_double);
-  //  let rhs = rhs_1.mul(rhs_2);
-  //  lhs.assertEquals(rhs);
-  //});
+  it('Test pair function', function() {
+    console.log("ttest bilinearity");
+    let g1 = G1Group.generator();
+    let g2 = G2Group.generator();
+    g2 = g2.double();
+    let pair12 = Pairing.pair(g2, g1);
+
+    let g3 = G1Group.generator();
+    let g4 = G2Group.generator();
+    g3 = g3.double();
+    let pair21 = Pairing.pair(g4, g3);
+
+    console.log(pair12.c0);
+    console.log(pair21.c0);
+    
+    console.log(pair12.c1);
+    console.log(pair21.c1);
+  });
 //
   //it('Pairing test', function() {
   //  console.log("test pairing");

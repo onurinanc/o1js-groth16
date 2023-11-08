@@ -7,7 +7,10 @@ export default class PrimeField{
     constructor(value: bigint) {
         this.modulus = 21888242871839275222246405745257275088696311157297823662689037894645226208583n;
         this.value = this.mod(value);
-        
+    }
+
+    static INV() {
+        return new PrimeField(9786893198990664585n);
     }
 
     mod(value: bigint): bigint {
