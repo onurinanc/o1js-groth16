@@ -18,7 +18,7 @@ describe('test pairing functions', function() {
     console.log("test fp12.one() + fp12.one()");
     //let res = Pairing.final_exponentiation(Fp12.one().add(Fp12.one()));
     //let res = Pairing.final_exponentiation_2_gnark(Fp12.one().add(Fp12.one()).add(Fp12.one()));
-    
+
     //let ress = Fp12.one().add(Fp12.one().add(Fp12.one()));
     //console.log(ress.c0);
     //console.log(ress.c1);
@@ -26,23 +26,23 @@ describe('test pairing functions', function() {
     //let res = Pairing.final_exponentiation_2_gnark(ress);
     //console.log(res.c0);
     //console.log(res.c1);
-//
-    //let val = new Fp12(
-    //  new Fp6(
-    //    new Fp2(new PrimeField(1n).R(), new PrimeField(1n).R()),
-    //    new Fp2(new PrimeField(1n).R(), new PrimeField(1n).R()),
-    //    new Fp2(new PrimeField(1n).R(), new PrimeField(1n).R())
-    //  ),
-    //  new Fp6(
-    //    new Fp2(new PrimeField(1n).R(), new PrimeField(0n).R()),
-    //    new Fp2(new PrimeField(0n).R(), new PrimeField(0n).R()),
-    //    new Fp2(new PrimeField(0n).R(), new PrimeField(0n).R())
-    //  )
-    //)
 
-    //let res = Pairing.final_exponentiation_gnark(val);
-    //console.log(res.c0);
-    //console.log(res.c1);
+    let val = new Fp12(
+      new Fp6(
+        new Fp2(new PrimeField(1n), new PrimeField(1n)),
+        new Fp2(new PrimeField(1n), new PrimeField(1n)),
+        new Fp2(new PrimeField(1n), new PrimeField(1n))
+      ),
+      new Fp6(
+        new Fp2(new PrimeField(1n), new PrimeField(0n)),
+        new Fp2(new PrimeField(0n), new PrimeField(0n)),
+        new Fp2(new PrimeField(0n), new PrimeField(0n))
+      )
+    )
+
+    let res = Pairing.final_exponentiation_gnark(val);
+    console.log(res.c0);
+    console.log(res.c1);
 
     //console.log(val.c0);
     //console.log(val.c1);
@@ -66,24 +66,24 @@ describe('test pairing functions', function() {
   });
 
   // e(P, Q + R) = e(P, Q) * e(P, R)
-  it('Test pair function', function() {
-    console.log("ttest bilinearity");
-    let g1 = G1Group.generator();
-    let g2 = G2Group.generator();
-    g2 = g2.double();
-    let pair12 = Pairing.pair(g2, g1);
-
-    let g3 = G1Group.generator();
-    let g4 = G2Group.generator();
-    g3 = g3.double();
-    let pair21 = Pairing.pair(g4, g3);
-
-    console.log(pair12.c0);
-    console.log(pair21.c0);
-    
-    console.log(pair12.c1);
-    console.log(pair21.c1);
-  });
+  //it('Test pair function', function() {
+  //  console.log("ttest bilinearity");
+  //  let g1 = G1Group.generator();
+  //  let g2 = G2Group.generator();
+  //  g2 = g2.double();
+  //  let pair12 = Pairing.pair(g2, g1);
+//
+  //  let g3 = G1Group.generator();
+  //  let g4 = G2Group.generator();
+  //  g3 = g3.double();
+  //  let pair21 = Pairing.pair(g4, g3);
+//
+  //  console.log(pair12.c0);
+  //  console.log(pair21.c0);
+  //  
+  //  console.log(pair12.c1);
+  //  console.log(pair21.c1);
+  //});
 //
   //it('Pairing test', function() {
   //  console.log("test pairing");

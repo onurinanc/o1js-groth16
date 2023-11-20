@@ -2,6 +2,7 @@ import {Field, Poseidon, Group} from 'o1js';
 import { isConstructorDeclaration } from 'typescript';
 import Fp2 from './fp2';
 import PrimeField from './primeField';
+import { UInt64 } from 'o1js/dist/node/provable/field-bigint';
 
 
 describe('test PrimeField', function() {
