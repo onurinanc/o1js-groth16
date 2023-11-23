@@ -198,6 +198,47 @@ export default class Fp6{
         );
     }
 
+    // Algorithm 17 from: https://eprint.iacr.org/2010/354.pdf
+    invert_x() {
+        let t0 = this.c0.square();
+        let t1 = this.c1.square();
+        let t2 = this.c2.square();
+
+        let t3 = this.c0.mul(this.c1);
+        let t4 = this.c0.mul(this.c2);
+        let t5 = this.c2.mul(this.c1);
+
+        let tmp = t5.mul_by_nonresidue();
+        let c0 = t0.sub(tmp);
+
+        tmp = t2.mul_by_nonresidue();
+        let c1 = tmp.sub(t3);
+
+        let c2 = t1.mul(t4);
+
+        let t6 = this.c0.mul(c0);
+
+        tmp = this.c2.mul(c1);
+        tmp = tmp.mul_by_nonresidue();
+        t6 = t6.add(tmp);
+
+        tmp = this.c1.mul(c2);
+        tmp = tmp.mul_by_nonresidue();
+        t6 = t6.add(tmp);
+
+        t6 = t6.invert();
+
+        c0 = c0.mul(t6);
+        c1 = c1.mul(t6);
+        c2 = c2.mul(t6);
+
+        return new Fp6(
+            c0,
+            c1,
+            c2
+        );
+    }
+
     // Multiply by cubic nonresidue v
     // c0, c1, c2 -> c2, c0, c1
 
