@@ -2,7 +2,7 @@ import {Field, Group, Poseidon, Scalar} from 'o1js';
 import Fp12 from './fp12';
 import Fp2 from './fp2';
 import Pairing from './pairing';
-import G2Group from './g2_depreceated';
+import G2Group from './g2';
 import { Pallas } from 'o1js/dist/node/bindings/crypto/elliptic_curve';
 
 
