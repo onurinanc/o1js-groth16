@@ -34,3 +34,41 @@ DELTA = 9
 ZETA = 0xe4bd44e5607cfd48 + 0xc28f069fbb966e3d * BASE + 0x5e6dd9e7e0acccb0 * BASE_2 + 0x30644e72e131a029 * BASE_3
 
 print(ZETA)
+
+print("Print Inverse Constant")
+print(0x87d20782e4866389)
+
+print("Print R for the Montgomery form")
+print(0x0e0a77c19a07df2f666ea36f7879462c0a78eb28f5c70b3dd35d438dc58f0d9d)
+
+print("Print R^2 for the Montgomery form")
+print(0x06d89f71cab8351f47ab1eff0a417ff6b5e71911d44501fbf32cfc5b538afa89)
+
+print("Print R^3 for the Montgomery form")
+print(0x20fd6e902d592544ef7f0b0c0ada0afb62f210e6a7283db6b1cd6dafda1530df)
+
+print("Print NEGATIVE_ONE for the Montgomery form")
+print(0x2259d6b14729c0fa51e1a247090812318d087f6872aabf4f68c3488912edefaa)
+
+print("Print TWO_INV for the Montgomery form")
+print(0x183227397098d014dc2822db40c0ac2ecbc0b548b438e5469e10460b6c3e7ea4)
+
+print("Print ROOT_OF_UNITY for the Montgomery form")
+print(0x30644e72e131a029b85045b68181585d97816a916871ca8d3c208c16d87cfd46)
+
+print("Print ROOT_OF_UNITY_INV for the Montgomery form")
+print(0x30644e72e131a029b85045b68181585d97816a916871ca8d3c208c16d87cfd46)
+
+print(0x30644e72e131a029b85045b68181585d97816a916871ca8d3c208c16d87cfd47)
+
+print(2**256 % 0x30644e72e131a029b85045b68181585d97816a916871ca8d3c208c16d87cfd47)
+
+print(0x47)
+print(0x11)
+
+print("New random multiplication parameters")
+print(0x0000000023441244000000002342323400f32cfc5b53fa89f32cfc5b538afa89)
+print("result c0")
+print(0x13523285a69bec15d56dd875a589273c951274b3828238bb065e6ca07fb1943e)
+print("result c1")
+print(0x0000000046882488000000004684646801e659f8b6a7f513e659f8b6a715f512)
