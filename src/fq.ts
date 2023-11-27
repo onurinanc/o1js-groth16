@@ -123,4 +123,16 @@ export default class Fq{
             Field3.toBigint(this.add(this).value)
         );
     }
+
+    square() {
+        return new Fq(
+            Field3.toBigint(this.mul(this).value)
+        );
+    }
+
+    div(x: Fq) {
+        return new Fq(
+            Field3.toBigint(ForeignField.div(this.value, x.value, this.modulus))
+        );
+    } 
 }
