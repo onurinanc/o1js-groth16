@@ -78,6 +78,7 @@ export default class Fq{
         )
     }
 
+    // We are not sure in here
     static one() {
         return Fq.R();
     }
@@ -134,5 +135,19 @@ export default class Fq{
         return new Fq(
             Field3.toBigint(ForeignField.div(this.value, x.value, this.modulus))
         );
-    } 
+    }  
+    
+    // need test for this
+    neg() {
+        return new Fq(
+            Field3.toBigint(ForeignField.sub(Field3.from(0n), this.value, this.modulus))
+        );
+    }
+
+    zero() {
+        return new Fq(
+            Field3.toBigint(Field3.from(0n))
+        );
+    }
 }
+

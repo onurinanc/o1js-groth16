@@ -26,6 +26,64 @@ describe('test Fq2 bn254', function() {
     
   });
 
+  // a * (b * c) == a * (c * b) = b * (c * a)
+  it('Mul Fq2', function() {
+    console.log("Mul two Fq2");
+    //
+    let nineFq2 = new Fq2(
+        new Fq(9n),
+        new Fq(1n)
+    );
+
+    let x = new Fq2(
+        new Fq(8n),
+        new Fq(1n)
+    );
+
+    
+  });
+
+  // (9 + u) * (8 + u) == (71 + 17u) in normal form
+  it('Mul Fq2', function() {
+    console.log("Mul two Fq2");
+    
+    // 9 + u
+    let x = new Fq2(
+        new Fq(9n),
+        new Fq(1n)
+    );
+
+    // 8 + u
+    let y = new Fq2(
+        new Fq(8n),
+        new Fq(1n)
+    );
+
+    let res = x.mul(y);
+    console.log(res.c0.toBigInt());
+    console.log(res.c1.toBigInt());
+    
+  });
+
+  // res c0: 8739174272930118246350991074272186610813592700785773244428337863339927508030n
+  // res c1: 7427866275203353410928616081310925443454477010046778512011383141650n
+  it('Mul Mont Fq2', function() {
+    let x = new Fq2(
+        new Fq(3713933137601676705464308040655462721727238505023389256005691570825n),
+        new Fq(1n)
+    );
+
+    let y = new Fq2(
+        new Fq(3713933137601676705464308040655462721727238505023389256005691570825n),
+        new Fq(1n)
+    );
+
+    let res = x.mul(y);
+    console.log(res.c0.toBigInt());
+    console.log(res.c1.toBigInt());
+    
+  });
+
   // a + a == 2*a
   it('Square Fq2', function() {
     
