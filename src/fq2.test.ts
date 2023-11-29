@@ -89,6 +89,21 @@ describe('test Fq2 bn254', function() {
     
   });
 
+  // Square pseudorandom
+  it('Square Fq2', function() {
+    let c0 = new Fq(243396315656041018029605402550187233771055319601070064817557336100633225n);
+
+    let x = new Fq2(
+        c0,
+        c0.double()
+    );
+
+    let res = x.square();
+    console.log("Test square");
+    console.log(res.c0.toBigInt());
+    console.log(res.c1.toBigInt());
+  });
+
   // a*a^-1 == O
   it('Invert Fq2', function() {
     
@@ -97,5 +112,72 @@ describe('test Fq2 bn254', function() {
   // (2+2u) * (9+u) = (16+20u)
   it('Mul By Nonresidue Fq2', function() {
     
+  });
+
+  // Random mul_by_nonresidue test
+  it('Mul By Nonresidue Fq2', function() {
+    let c0 = new Fq(243396315656041018029605402550187233771055319601070064817557336100633225n);
+
+    let x = new Fq2(
+        c0,
+        c0.double()
+    );
+
+    let res = x.mul_by_nonresidue();
+
+    console.log("Test mul_by_nonresidue");
+    console.log(res.c0.toBigInt());
+    console.log(res.c1.toBigInt());
+  });
+
+
+  // Random mul_by_nonresidue test
+  it('Mul By Nonresidue Fq2', function() {
+    let c0 = new Fq(243396315656041018029605402550187233771055319601070064817557336100633225n);
+
+    let x = new Fq2(
+        c0,
+        c0.double()
+    );
+
+    let res = x.mul_by_nonresidue();
+
+    console.log("Test mul_by_nonresidue");
+    console.log(res.c0.toBigInt());
+    console.log(res.c1.toBigInt());
+  }); 
+
+  // Random frobeinus map test
+  it('Mul By Nonresidue Fq2', function() {
+    let c0 = new Fq(243396315656041018029605402550187233771055319601070064817557336100633225n);
+
+    let x = new Fq2(
+        c0,
+        c0.double()
+    );
+
+    let res0 = x.frobenius_map(0n);
+    let res1 = x.frobenius_map(1n);
+
+    console.log("Test frob 0");
+    console.log(res0.c0.toBigInt());
+    console.log(res0.c1.toBigInt());
+
+    console.log("Test frob 1");
+    console.log(res1.c0.toBigInt());
+    console.log(res1.c1.toBigInt());
+  }); 
+
+  // comparison test
+  it('Invert Fq2', function() {
+    let x = new Fq2(
+      new Fq(2n),
+      new Fq(3n)
+    );
+
+    let res = x.invert();
+    console.log("Test invert");
+    console.log(res.c0.toBigInt());
+    console.log(res.c1.toBigInt());
   });
 });

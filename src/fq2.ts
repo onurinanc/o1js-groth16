@@ -68,6 +68,82 @@ export default class Fq2{
             this.c1.double()
         )
     }
+
+    square() {
+        let ab = this.c0.mul(this.c1);
+        let c0c1 = this.c0.add(this.c1);
+        let c0 = this.c1.neg();
+        c0 = c0.add(this.c0);
+        c0 = c0.mul(c0c1);
+        c0 = c0.sub(ab);
+
+        return new Fq2(
+            c0.add(ab),
+            ab.double()
+        );
+    }
+
+    static frobenius_coeff_fq2_c1() {
+        return new Fq2(
+            new Fq(1n),
+            new Fq(21888242871839275222246405745257275088696311157297823662689037894645226208582n)
+        )
+    }
+
+    frobenius_map(power: bigint) {
+        if (power %2n == 0n) {
+            return new Fq2(
+                this.c0,
+                this.c1.mul(new Fq(1n))
+            );
+        } else {
+            return new Fq2(
+                this.c0,
+                this.c1.mul(new Fq(21888242871839275222246405745257275088696311157297823662689037894645226208582n))
+            )
+        }
+    }
+
+    mul_by_nonresidue() {
+        let t0 = this.c0;
+        let t1 = this.c1;
+
+        let c0 = t0.double().double().double();
+        let c1 = t1.double().double().double();
+
+        c0 = c0.add(t0);
+        c0 = c0.sub(t1);
+
+        c1 = c1.add(t1);
+        c1 = c1.add(t0);
+
+        return new Fq2(
+            c0,
+            c1
+        );
+    }
+
+    invert() {
+        let t1 = this.c1;
+        t1 = t1.square();
+
+        let t0 = this.c0;
+        t0 = t0.square();
+
+        t0 = t0.add(t1);
+
+        let t = t0.inv();
+
+        let c0 = this.c0.mul(t);
+        let c1 = this.c1.mul(t);
+
+        c1 = c1.neg();
+
+        return new Fq2(
+            c0,
+            c1
+        );   
+    }
     
 }
 

@@ -144,10 +144,11 @@ export default class Fq{
         );
     }
 
-    zero() {
+    static zero() {
         return new Fq(
             Field3.toBigint(Field3.from(0n))
         );
     }
-}
 
+
+}
