@@ -144,6 +144,28 @@ export default class Fq2{
             c1
         );   
     }
-    
+
+    norm() {
+        let t0 = this.c0.square();
+        let t1 = this.c1.square();
+        return t0.add(t1);
+    }
+
+    // need test
+    static one() {
+        return new Fq2(
+            Fq.one(),
+            Fq.zero()
+        )
+    }
+
+    static zero() {
+        return new Fq2(
+            Fq.zero(),
+            Fq.zero()
+        )
+    }
+
+     
 }
 

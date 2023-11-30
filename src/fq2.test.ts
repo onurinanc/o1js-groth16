@@ -1,3 +1,4 @@
+import { assert } from 'o1js/dist/node/lib/errors';
 import Fq from './fq';
 import Fq2 from './fq2'
 import { ForeignField, Field3} from 'o1js/dist/node/lib/gadgets/foreign-field';
@@ -86,7 +87,7 @@ describe('test Fq2 bn254', function() {
 
   // a + a == 2*a
   it('Square Fq2', function() {
-    
+
   });
 
   // Square pseudorandom
@@ -180,4 +181,5 @@ describe('test Fq2 bn254', function() {
     console.log(res.c0.toBigInt());
     console.log(res.c1.toBigInt());
   });
+  
 });
