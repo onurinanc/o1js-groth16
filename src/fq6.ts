@@ -83,4 +83,81 @@ export default class Fq6{
         );
     }
 
+    neg() {
+        return new Fq6(
+            this.c0.neg(),
+            this.c1.neg(),
+            this.c2.neg()
+        )
+    }
+
+    double() {
+        return new Fq6(
+            this.c0.double(),
+            this.c1.double(),
+            this.c2.double()
+        )
+    }
+
+    square() {
+        // s0 = a^2
+        let s0 = this.c0;
+        s0 = s0.square();
+
+        // s1 = 2ab
+        let ab = this.c0;
+        ab = ab.mul(this.c1);
+        let s1 = ab;
+        s1 = s1.double();
+
+        // s2 = (a - b + c)^2
+        let s2 = this.c0;
+        s2 = s2.sub(this.c1);
+        s2 = s2.add(this.c2);
+        s2 = s2.square();
+
+        // bc
+        let bc = this.c1;
+        bc = bc.mul(this.c2);
+
+        // s3 = 2bc
+        let s3 = bc;
+        s3 = bc.double();
+
+        // s4 = c^2
+        let s4 = this.c2;
+        s4 = s4.square();
+
+        // new c0 = 2bc.mul_by_xi + a^2
+        let c0 = s3;
+        c0 = c0.mul_by_nonresidue();
+        c0 = c0.add(s0);
+
+        // new c1 = (c^2).mul_by_xi + 2ab
+        let c1 = s4;
+        c1 = c1.mul_by_nonresidue();
+        c1 = c1.add(s1);
+
+        // new c2 = 2ab + (a - b + c)^2 + 2bc - a^2 - c^2 = b^2 + 2ac
+        let c2 = s1;
+        c2 = c2.add(s2);
+        c2 = c2.add(s3);
+        c2 = c2.sub(s0);
+        c2 = c2.sub(s4);
+
+        return new Fq6(
+            c0,
+            c1,
+            c2
+        );
+    }
+
+    mul_by_nonresidue() {
+        return new Fq6(
+            this.c2.mul_by_nonresidue(),
+            this.c0,
+            this.c1
+        );
+    }
+
 }
