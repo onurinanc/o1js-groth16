@@ -160,4 +160,70 @@ export default class Fq6{
         );
     }
 
+    mul_by_1(c1: Fq2) {
+        let b_b = this.c1;
+        b_b = b_b.mul(c1);
+
+        let t1 = c1;
+        let tmp = this.c1;
+        tmp = tmp.add(this.c2);
+
+        t1 = t1.mul(tmp);
+        t1 = t1.sub(b_b);
+        t1 = t1.mul_by_nonresidue();
+
+        let t2 = c1;
+        tmp = this.c0;
+        tmp = tmp.add(this.c1);
+
+        t2 = t2.mul(tmp);
+        t2 = t2.sub(b_b);
+
+        return new Fq6(
+            t1,
+            t2,
+            b_b
+        );
+    }
+
+    mul_by_01(c0: Fq2, c1: Fq2) {
+        let a_a = this.c0;
+        let b_b = this.c1;
+        a_a = a_a.mul(c0);
+        b_b = b_b.mul(c1);
+
+        let t1 = c1;
+        let tmp = this.c1;
+        tmp = tmp.add(this.c2);
+
+        t1 = t1.mul(tmp);
+        t1 = t1.sub(b_b);
+        t1 = t1.mul_by_nonresidue();
+        t1 = t1.add(a_a);
+
+        let t3 = c0;
+        tmp = this.c0;
+        tmp = tmp.add(this.c2);
+
+        t3 = t3.mul(tmp);
+        t3 = t3.sub(a_a);
+        t3 = t3.add(b_b);
+
+        let t2 = c0;
+        t2 = t2.add(c1);
+
+        tmp = this.c0;
+        tmp = tmp.add(this.c1);
+
+        t2 = t2.mul(tmp);
+        t2 = t2.sub(a_a);
+        t2 = t2.sub(b_b);
+
+        return new Fq6(
+            t1,
+            t2,
+            t3
+        );
+    }
+
 }
