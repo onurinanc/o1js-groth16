@@ -2,6 +2,7 @@
 Fq.ts uses {ForeignField, Field3} from {Gadgets}
 */
 import { ForeignField, Field3 } from "o1js/dist/node/lib/gadgets/foreign-field";
+import { Provable, provable } from "o1js";
 
 export default class Fq{
     value: Field3;
@@ -152,3 +153,4 @@ export default class Fq{
 
 
 }
+
