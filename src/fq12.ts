@@ -93,5 +93,50 @@ export default class Fq12{
         )
     }
     
+    mul_by_014(c0: Fq2, c1: Fq2, c4: Fq2) {
+        let aa = this.c0;
+        aa = aa.mul_by_01(c0, c1);
+        let bb = this.c1;
+        bb = bb.mul_by_1(c4);
+        let o = c1.add(c4);
+
+        let c1_new = this.c1.add(this.c0); // check this
+        c1_new = c1_new.mul_by_01(c0, o);
+        c1_new = c1_new.sub(aa);
+        c1_new = c1_new.sub(bb);
+
+        let c0_new = bb;
+        c0_new = c0_new.mul_by_nonresidue();
+        c0_new = c0_new.add(aa);
+
+        return new Fq12(
+            c0_new,
+            c1_new
+        );
+    }
+
+    mul_by_034(c0: Fq2, c3: Fq2, c4: Fq2) {
+        let t0 = new Fq6(
+            this.c0.c0.mul(c0),
+            this.c0.c1.mul(c0),
+            this.c0.c2.mul(c0)
+        );
+
+        let t1 = this.c1;
+        t1 = t1.mul_by_01(c3, c4);
+        let o = c0.add(c3);
+        let t2 = this.c0.add(this.c1);
+        t2 = t2.mul_by_01(o, c4);
+        t2 = t2.sub(t0);
+
+        let c1_new = t2.sub(t1);
+        t1 = t1.mul_by_nonresidue();
+        let c0_new = t0.add(t1);
+
+        return new Fq12(
+            c0_new,
+            c1_new
+        );
+    }
 }
 
