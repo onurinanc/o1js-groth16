@@ -236,5 +236,202 @@ export default class Fq12{
             )
         );
     }
+
+    // be sure power is provable    
+    frobenius_map(power: bigint) {
+        let c0 = this.c0.frobenius_map(power);
+        let c1 = this.c1.frobenius_map(power);
+
+        if (power %12n == 0n) {
+            let frobenius_coeff_fq12_c1 = new Fq2(
+                new Fq(1n),
+                new Fq(0n)
+            );
+
+            return new Fq12(
+                c0,
+                new Fq6(
+                    c1.c0.mul(frobenius_coeff_fq12_c1),
+                    c1.c1.mul(frobenius_coeff_fq12_c1),
+                    c1.c2.mul(frobenius_coeff_fq12_c1)
+                )
+            );
+        } else if (power %12n == 1n) {
+            let frobenius_coeff_fq12_c1 = new Fq2(
+                new Fq(8376118865763821496583973867626364092589906065868298776909617916018768340080n),
+                new Fq(16469823323077808223889137241176536799009286646108169935659301613961712198316n)
+            );
+
+            return new Fq12(
+                c0,
+                new Fq6(
+                    c1.c0.mul(frobenius_coeff_fq12_c1),
+                    c1.c1.mul(frobenius_coeff_fq12_c1),
+                    c1.c2.mul(frobenius_coeff_fq12_c1)
+                )
+            );
+        }
+
+        else if (power %12n == 2n) {
+            let frobenius_coeff_fq12_c1 = new Fq2(
+                new Fq(21888242871839275220042445260109153167277707414472061641714758635765020556617n),
+                new Fq(0n)
+            );
+
+            return new Fq12(
+                c0,
+                new Fq6(
+                    c1.c0.mul(frobenius_coeff_fq12_c1),
+                    c1.c1.mul(frobenius_coeff_fq12_c1),
+                    c1.c2.mul(frobenius_coeff_fq12_c1)
+                )
+            );
+        }
+
+        else if (power %12n == 3n) {
+            let frobenius_coeff_fq12_c1 = new Fq2(
+                new Fq(11697423496358154304825782922584725312912383441159505038794027105778954184319n),
+                new Fq(303847389135065887422783454877609941456349188919719272345083954437860409601n)
+            );
+
+            return new Fq12(
+                c0,
+                new Fq6(
+                    c1.c0.mul(frobenius_coeff_fq12_c1),
+                    c1.c1.mul(frobenius_coeff_fq12_c1),
+                    c1.c2.mul(frobenius_coeff_fq12_c1)
+                )
+            );
+        }
+
+        else if (power %12n == 4n) {
+            let frobenius_coeff_fq12_c1 = new Fq2(
+                new Fq(21888242871839275220042445260109153167277707414472061641714758635765020556616n),
+                new Fq(0n)
+            );
+
+            return new Fq12(
+                c0,
+                new Fq6(
+                    c1.c0.mul(frobenius_coeff_fq12_c1),
+                    c1.c1.mul(frobenius_coeff_fq12_c1),
+                    c1.c2.mul(frobenius_coeff_fq12_c1)
+                )
+            );
+        }
+
+        else if (power %12n == 5n) {
+            let frobenius_coeff_fq12_c1 = new Fq2(
+                new Fq(3321304630594332808241809054958361220322477375291206261884409189760185844239n),
+                new Fq(5722266937896532885780051958958348231143373700109372999374820235121374419868n)
+            );
+
+            return new Fq12(
+                c0,
+                new Fq6(
+                    c1.c0.mul(frobenius_coeff_fq12_c1),
+                    c1.c1.mul(frobenius_coeff_fq12_c1),
+                    c1.c2.mul(frobenius_coeff_fq12_c1)
+                )
+            );
+        }
+
+        else if (power %12n == 6n) {
+            let frobenius_coeff_fq12_c1 = new Fq2(
+                new Fq(21888242871839275222246405745257275088696311157297823662689037894645226208582n),
+                new Fq(0n)
+            );
+
+            return new Fq12(
+                c0,
+                new Fq6(
+                    c1.c0.mul(frobenius_coeff_fq12_c1),
+                    c1.c1.mul(frobenius_coeff_fq12_c1),
+                    c1.c2.mul(frobenius_coeff_fq12_c1)
+                )
+            );
+        }
+
+        else if (power %12n == 7n) {
+            let frobenius_coeff_fq12_c1 = new Fq2(
+                new Fq(13512124006075453725662431877630910996106405091429524885779419978626457868503n),
+                new Fq(5418419548761466998357268504080738289687024511189653727029736280683514010267n)
+            );
+
+            return new Fq12(
+                c0,
+                new Fq6(
+                    c1.c0.mul(frobenius_coeff_fq12_c1),
+                    c1.c1.mul(frobenius_coeff_fq12_c1),
+                    c1.c2.mul(frobenius_coeff_fq12_c1)
+                )
+            );
+        }
+
+        else if (power %12n == 8n) {
+            let frobenius_coeff_fq12_c1 = new Fq2(
+                new Fq(2203960485148121921418603742825762020974279258880205651966n),
+                new Fq(0n)
+            );
+
+            return new Fq12(
+                c0,
+                new Fq6(
+                    c1.c0.mul(frobenius_coeff_fq12_c1),
+                    c1.c1.mul(frobenius_coeff_fq12_c1),
+                    c1.c2.mul(frobenius_coeff_fq12_c1)
+                )
+            );
+        }
+
+        else if (power %12n == 9n) {
+            let frobenius_coeff_fq12_c1 = new Fq2(
+                new Fq(10190819375481120917420622822672549775783927716138318623895010788866272024264n),
+                new Fq(21584395482704209334823622290379665147239961968378104390343953940207365798982n)
+            );
+
+            return new Fq12(
+                c0,
+                new Fq6(
+                    c1.c0.mul(frobenius_coeff_fq12_c1),
+                    c1.c1.mul(frobenius_coeff_fq12_c1),
+                    c1.c2.mul(frobenius_coeff_fq12_c1)
+                )
+            );
+        }
+
+        else if (power %12n == 10n) {
+            let frobenius_coeff_fq12_c1 = new Fq2(
+                new Fq(2203960485148121921418603742825762020974279258880205651967n),
+                new Fq(0n)
+            );
+
+            return new Fq12(
+                c0,
+                new Fq6(
+                    c1.c0.mul(frobenius_coeff_fq12_c1),
+                    c1.c1.mul(frobenius_coeff_fq12_c1),
+                    c1.c2.mul(frobenius_coeff_fq12_c1)
+                )
+            );
+        }
+
+        else {
+            let frobenius_coeff_fq12_c1 = new Fq2(
+                new Fq(18566938241244942414004596690298913868373833782006617400804628704885040364344n),
+                new Fq(16165975933942742336466353786298926857552937457188450663314217659523851788715n)
+            );
+
+            return new Fq12(
+                c0,
+                new Fq6(
+                    c1.c0.mul(frobenius_coeff_fq12_c1),
+                    c1.c1.mul(frobenius_coeff_fq12_c1),
+                    c1.c2.mul(frobenius_coeff_fq12_c1)
+                )
+            );
+        }
+
+    }
 }
 
