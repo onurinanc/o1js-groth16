@@ -433,5 +433,38 @@ export default class Fq12{
         }
 
     }
+
+    static one() {
+        return new Fq12(
+            new Fq6(
+                new Fq2(
+                    new Fq(1n),
+                    new Fq(0n)
+                ),
+                new Fq2(
+                    new Fq(0n),
+                    new Fq(0n)
+                ),
+                new Fq2(
+                    new Fq(0n),
+                    new Fq(0n)
+                ),
+            ),
+            new Fq6(
+                new Fq2(
+                    new Fq(0n),
+                    new Fq(0n)
+                ),
+                new Fq2(
+                    new Fq(0n),
+                    new Fq(0n)
+                ),
+                new Fq2(
+                    new Fq(0n),
+                    new Fq(0n)
+                )
+            )
+        )
+    }
 }
 
