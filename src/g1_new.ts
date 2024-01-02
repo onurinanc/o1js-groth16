@@ -92,4 +92,38 @@ export default class G1{
             z3
         );
     }
+
+    double() {
+        let t0 = this.y.square();
+        let z3 = t0.add(t0);
+        z3 = z3.add(z3);
+        z3 = z3.add(z3);
+        let t1 = this.y.mul(this.z);
+        let t2 = this.z.square();
+
+        //t2 = t2.mul_by_3b();
+        let input = t2;
+        t2 = t2.double();
+        t2 = t2.double();
+        t2 = t2.double();
+        t2 = t2.add(input);
+
+        let x3 = t2.mul(z3);
+        let y3 = t0.add(t2);
+        z3 = t1.mul(z3);
+        t1 = t2.add(t2);
+        t2 = t1.add(t2);
+        t0 = t0.sub(t2);
+        y3 = t0.mul(y3);
+        y3 = x3.add(y3);
+        t1 = this.x.mul(this.y);
+        x3 = t0.mul(t1);
+        x3 = x3.add(x3);
+
+        return new G1(
+            x3,
+            y3,
+            z3
+        );
+    }
 }
