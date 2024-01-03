@@ -126,4 +126,20 @@ export default class G1{
             z3
         );
     }
+
+    to_affine() {
+        let z_inv = this.z.inv();
+        let x = this.x.mul(z_inv);
+        let y = this.y.mul(z_inv);
+
+        // conditional_select??
+
+        // As an affine, let's have z = 0 with G1
+        return new G1(
+            x,
+            y,
+            new Fq(0n)
+        )
+    }
+    
 }
