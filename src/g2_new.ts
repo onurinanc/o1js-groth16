@@ -115,5 +115,53 @@ export default class G2{
             z3
         );
     }
+
+    double() {
+        let t0 = this.y.square();
+        let z3 = t0.add(t0);
+        z3 = z3.add(z3);
+        z3 = z3.add(z3);
+        let t1 = this.y.mul(this.z);
+        let t2 = this.z.square();
+
+        //t2 = t2.mul_by_3b();
+        t2 = t2.mul(G2.curve_constant_3b);
+
+        let x3 = t2.mul(z3);
+        let y3 = t0.add(t2);
+        z3 = t1.mul(z3);
+        t1 = t2.add(t2);
+        t2 = t1.add(t2);
+        t0 = t0.sub(t2);
+        y3 = t0.mul(y3);
+        y3 = x3.add(y3);
+        t1 = this.x.mul(this.y);
+        x3 = t0.mul(t1);
+        x3 = x3.add(x3);
+
+        return new G2(
+            x3,
+            y3,
+            z3
+        );
+    }
+
+    to_affine() {
+        let z_inv = this.z.invert();
+        let x = this.x.mul(z_inv);
+        let y = this.y.mul(z_inv);
+
+        // conditional_select??
+
+        // As an affine, let's have z = 0 with G1
+        return new G2(
+            x,
+            y,
+            new Fq2(
+                new Fq(0n),
+                new Fq(0n)
+            )
+        )
+    }
     
 }
