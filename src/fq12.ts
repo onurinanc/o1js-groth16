@@ -5,6 +5,7 @@ import { ForeignField, Field3 } from "o1js/dist/node/lib/gadgets/foreign-field";
 import Fq6 from './fq6';
 import Fq2 from "./fq2";
 import Fq from "./fq";
+import Pairing from "./pairing_new";
 
 /// An element of Fq2, represented by c0 + c1 * w; where u^2 = -1.
 
@@ -92,7 +93,7 @@ export default class Fq12{
             this.c1.neg()
         )
     }
-    
+
     mul_by_014(c0: Fq2, c1: Fq2, c4: Fq2) {
         let aa = this.c0;
         aa = aa.mul_by_01(c0, c1);
@@ -434,6 +435,7 @@ export default class Fq12{
 
     }
 
+    // we didn't test this yet.
     static one() {
         return new Fq12(
             new Fq6(
@@ -466,5 +468,19 @@ export default class Fq12{
             )
         )
     }
+
+    exp_by_x() {
+        let res = Fq12.one();
+
+        for (let i = 0; i < 64; i++) {
+            res = res.cyclotomic_square();
+            if (Pairing.BN_X_BINARY[i] == 1) {
+                res = res.mul(this);
+            }
+        }
+        
+        return res;
+    }
+    
 }
 
