@@ -37,6 +37,7 @@
   },
   "dependencies": {
     "@noble/curves": "^1.2.0",
-    "o1js": "^0.14.2"
+    "o1js": "^0.14.2",
+    "zkapp-cli": "^0.16.0"
   }
 }

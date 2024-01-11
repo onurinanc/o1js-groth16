@@ -1,20 +1,9 @@
 import G1 from './g1_new';
 import G2 from './g2_new';
 import Fq12 from './fq12';
-
-class LineEval {
-    L: Fq12
-    T: G2
-
-    constructor(L: Fq12, T:G2) {
-        this.L = L;
-        this.T = T;
-    }
-}
+import Fq6 from './fq6';
 
 export default class Pairing{
-
-    static line_eval: [Fq12, G2];
 
     static BN_X_BINARY = [
         0, 1, 0, 0, 0, 1, 0, 0, 
@@ -129,6 +118,155 @@ export default class Pairing{
 
         return t0;
     }
+
+    // haven't test it yet.
+    static doubling_step(r: G2) {
+        let tmp0 = r.x;
+        tmp0 = tmp0.square();
+
+        let tmp1 = r.y;
+        tmp1 = tmp1.square();
+
+        let tmp2 = tmp1;
+        tmp2 = tmp2.square();
+
+        let tmp3 = tmp1;
+        tmp3 = tmp3.add(r.x);
+        tmp3 = tmp3.square();
+        tmp3 = tmp3.sub(tmp0);
+        tmp3 = tmp3.sub(tmp2);
+        tmp3 = tmp3.double();
+
+        let tmp4 = tmp0;
+        tmp4 = tmp4.double();
+        tmp4 = tmp4.add(tmp0);
+
+        let tmp6 = r.x;
+        tmp6 = tmp6.add(tmp4);
+
+        let tmp5 = tmp4;
+        tmp5 = tmp5.square();
+
+        let zsquared = r.z;
+        zsquared = zsquared.square();
+
+        let cx = tmp5;
+        cx = cx.sub(tmp3);
+        cx = cx.sub(tmp3);
+
+        let cz = r.y;
+        cz = cz.square();
+        cz = cz.sub(tmp1);
+        cz = cz.sub(zsquared);
+
+        let cy = tmp3;
+        cy = cy.sub(cx);
+        cy = cy.mul(tmp4);
+
+        tmp2 = tmp2.double();
+        tmp2 = tmp2.double();
+        tmp2 = tmp2.double();
+
+        cy = cy.sub(tmp2);
+
+        tmp3 = tmp4;
+        tmp3 = tmp3.mul(zsquared);
+        tmp3 = tmp3.double();
+        tmp3 = tmp3.neg();
+
+        tmp6 = tmp6.square();
+        tmp6 = tmp6.sub(tmp0);
+        tmp6 = tmp6.sub(tmp5);
+
+        tmp1 = tmp1.double();
+        tmp1 = tmp1.double();
+
+        tmp6 = tmp6.sub(tmp1);
+
+        tmp0 = cz;
+        tmp0 = tmp0.mul(zsquared);
+        tmp0 = tmp0.double();
+
+        return new G2(
+            tmp0,
+            tmp3,
+            tmp6
+        );
+        
+    }
+
+    // Burada, q_affine G2 Affine olacak. Ben bunu direk G2 olarak aldım.
+    // * Test edilmedi
+    // * Test ederken affine olduğuna özen göster.
+    static addition_step(r: G2, q_affine: G2) {
+        let zsquared = r.z;
+        zsquared = zsquared.square();
+
+        let ysquared = q_affine.y;
+        ysquared = ysquared.square();
+
+        let t0 = zsquared;
+        t0 = t0.mul(q_affine.x);
+
+        let t1 = q_affine.y;
+        t1 = t1.add(r.z);
+        t1 = t1.square();
+        t1 = t1.sub(ysquared);
+        t1 = t1.sub(zsquared);
+        t1 = t1.mul(zsquared);
+
+        let t2 = t0;
+        t2 = t2.sub(r.x);
+
+        let t3 = t2;
+        t3 = t3.square();
+
+        let t4 = t3;
+        t4 = t4.double();
+        t4 = t4.double();
+
+        let t5 = t4;
+        t5 = t5.mul(t2);
+
+        let t6 = t1;
+        t6 = t6.sub(r.y);
+        t6 = t6.sub(r.y);
+
+        let t9 = t6;
+        t9 = t9.mul(q_affine.x);
+
+        // stay at line 348.
+        let t7 = t4;
+        t7 = t7.mul(r.x);
+
+        let cx = t6;
+        cx = cx.square();
+        cx = cx.sub(t5);
+        cx = cx.sub(t7);
+        cx = cx.sub(t7);
+
+        let cz = r.z.add(t2);
+        cz = cz.square();
+        cz = cz.sub(zsquared);
+        cz = cz.sub(t3);
+
+        let t10 = q_affine.y;
+        t10 = t10.add(r.z);
+
+        let t8 = t7;
+        t8 = t8.sub(r.x);
+        t8 = t8.mul(t6);
+
+        t0 = r.y;
+        t0 = t0.mul(t5);
+        t0 = t0.double();
+
+        let cy = t8;
+        cy = cy.sub(t0);
+
+    }
+
+
 
     static pair(Q: G2, P: G1) {
 
