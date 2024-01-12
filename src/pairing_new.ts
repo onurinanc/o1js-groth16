@@ -266,7 +266,6 @@ export default class Pairing{
 
     }
 
-
     static pair(Q: G2, P: G1) {
 
     }
