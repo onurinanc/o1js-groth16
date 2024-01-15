@@ -1134,3 +1134,57 @@ print("c1: c2: c0:")
 print(0x1c40fcfabbfb7f0ffb81c86596c2de4590e505a2cbc2bc02679fb2cab8dddff0)
 print("c1: c2: c1:")
 print(0x02503c21ba388bdd89b2056b13aafc160d35030d321b14c81dbec50908ecc488)
+
+
+#g2_affine 3G (Fq2 { c0: , c1:  }, Fq2 { c0: , c1:  })
+#g2_2g 2G G2 { x: Fq2 { c0: , c1:  }, y: Fq2 { c0: , c1:  }, z: Fq2 { c0: , c1:  } }
+#result addition_step after addition_step (Fq2 { c0: , c1:  }, Fq2 { c0: , c1:  }, Fq2 { c0: , c1:  })
+
+print(" ")
+print("g2_affine_3g")
+print("G2 x c0")
+print(0x06064e784db10e9051e52826e192715e8d7e478cb09a5e0012defa0694fbc7f5)
+print("G2 x c1")
+print(0x1014772f57bb9742735191cd5dcfe4ebbc04156b6878a0a7c9824f32ffb66e85)
+print("G2 y c0")
+print(0x058e1d5681b5b9e0074b0f9c8d2c68a069b920d74521e79765036d57666c5597)
+print("G2 y c1")
+print(0x021e2335f3354bb7922ffcc2f38d3323dd9453ac49b55441452aeaca147711b2)
+print("G2 z c0")
+print(0)
+print("G2 z c1")
+print(0)
+
+
+
+print("g2_2g")
+print("G2 x c0")
+print(0x27f03be0aa0fd2b865604fc92e69ce9a3bcf33e712c357a5df8430758e0a09ff)
+print("G2 x c1")
+print(0x22dbec9f72213a8aef8d885ad3f731b029917615e3d0668192c0bc5fe46f0de5)
+print("G2 y c0")
+print(0x2891f38f6935fd84eb12d62e95fef138152ff094bd25827101c10da5c8693bc8)
+print("G2 y c1")
+print(0x053858cc3dba708f6259df5c8932f6b1fb6348cb8fdefd6c9f5265a7b4e4ae19)
+print("G2 z c0")
+print(0x18f8bffb070f439eb5e057cf858422f31e6a10fe231586b7c38a953c1f1ccd87)
+print("G2 z c1")
+print(0x2fb9598523beb84b3773182300edd3481e4cd7bba769bada63a2f95715b43df1)
+
+
+
+print("addition result")
+print("G2 x c0")
+print(0x20280c0ac73ad2dfeb19c327a26aba9bf8e79e65e8e8a67be7cc9812c4224292)
+print("G2 x c1")
+print(0x213d2045276a0a0cdb12ec1252132da13cc756ef45743cc4c3099b4bc1e9fec1)
+print("G2 y c0")
+print(0x1852eaea7c9244f1cbe244cb61ad7f0144ccc22e9018a76125f036c7e5583391)
+print("G2 y c1")
+print(0x17226552baf27c4573eccaa6362cc71589f5a52d636af5a26138258256245a65)
+print("G2 z c0")
+print(0x1398cd3e96bf21a032e8b5555010881076f1c21ff8b33862cfd5f72b9c4a5680)
+print("G2 z c1")
+print(0x0b217dfbd864f51e3c83dcd1841eb1ba5606972b8f5e3043ced56d5380bf5bef)
+
+

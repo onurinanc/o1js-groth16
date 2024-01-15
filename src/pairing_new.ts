@@ -251,10 +251,10 @@ export default class Pairing{
         cz = cz.sub(t3);
 
         let t10 = q_affine.y;
-        t10 = t10.add(r.z);
+        t10 = t10.add(cz);
 
         let t8 = t7;
-        t8 = t8.sub(r.x);
+        t8 = t8.sub(cx);
         t8 = t8.mul(t6);
 
         t0 = r.y;
@@ -263,6 +263,45 @@ export default class Pairing{
 
         let cy = t8;
         cy = cy.sub(t0);
+
+        t10 = t10.square();
+        t10 = t10.sub(ysquared);
+
+        let ztsquared = cz;
+        ztsquared = ztsquared.square();
+
+        t10 = t10.sub(ztsquared);
+
+        t9 = t9.double();
+        t9 = t9.sub(t10);
+
+        t10 = cz;
+        t10 = t10.double();
+
+        t6 = t6.neg();
+
+        t1 = t6;
+        t1 = t1.double();
+
+        return new G2(
+            t10,
+            t1,
+            t9
+        );
+    }
+
+    // doubling_step
+    // addition_step
+    // bunlara test yapmamız gerekiyor.
+
+    // G2Affine oluşturup buna belirli özellikler verebiliriz.
+    // Zaten doubling veya ddition işlemleri yapmayacağız.
+
+    // from_affine diye bir fonksiyon yok ama?
+    // from_affine olursa 
+
+    miller_loop(Q: G2, P:G1) {
+        let r = Q; // burada direk Q affine yerine böyle aldık
 
     }
 
