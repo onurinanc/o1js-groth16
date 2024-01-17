@@ -289,7 +289,7 @@ export default class Pairing{
         t8 = t8.sub(cx);
         t8 = t8.mul(t6);
 
-        t0 = r.y;
+        t0 = r.y; 
         t0 = t0.mul(t5);
         t0 = t0.double();
 
@@ -308,7 +308,7 @@ export default class Pairing{
         t9 = t9.sub(t10);
 
         t10 = cz;
-        t10 = t10.double();
+        t10 = t10.double(); // 
 
         t6 = t6.neg();
 
@@ -355,38 +355,119 @@ export default class Pairing{
             Q.x,
             Q.y.neg()
         );
+        
 
         for (let i = 64; i > 0; i--) {
-            console.log(i);
             if (i != 64) {
                 f = f.square();
             }
 
+            /*if (i == 64) {
+                console.log("r before doubling is:")
+                console.log(r.x.c0.toBigInt());
+                console.log(r.x.c1.toBigInt());
+                console.log(r.y.c0.toBigInt());
+                console.log(r.y.c1.toBigInt());
+                console.log(r.z.c0.toBigInt());
+                console.log(r.z.c1.toBigInt());
+            }*/
+            
             let line_eval = Pairing.doubling_step(r);
-            r = line_eval.r;           
-            f = Pairing.ell(f, line_eval.result, P);
+            r = line_eval.r;  
+            let result = line_eval.result;
+            // Buraya kadar doğru
+            
+            if (i == 64) {
+                console.log("r after doubling is:")
+                console.log(r.x.c0.toBigInt());
+                console.log(r.x.c1.toBigInt());
+                console.log(r.y.c0.toBigInt());
+                console.log(r.y.c1.toBigInt());
+                console.log(r.z.c0.toBigInt());
+                console.log(r.z.c1.toBigInt());
+
+                /*console.log("result after doubling is:")
+                console.log(result.x.c0.toBigInt());
+                console.log(result.x.c1.toBigInt());
+                console.log(result.y.c0.toBigInt());
+                console.log(result.y.c1.toBigInt());
+                console.log(result.z.c0.toBigInt());
+                console.log(result.z.c1.toBigInt()); */ 
+            }
+
+            f = Pairing.ell(f, result, P);
 
             let x = Pairing.SIX_U_PLUS_2_NAF[i - 1];
 
             if (x == 1) {
 
+                
+                if (i == 64) {
+                    console.log("r before addition is:")
+                    console.log(r.x.c0.toBigInt());
+                    console.log(r.x.c1.toBigInt());
+                    console.log(r.y.c0.toBigInt());
+                    console.log(r.y.c1.toBigInt());
+                    console.log(r.z.c0.toBigInt());
+                    console.log(r.z.c1.toBigInt()); 
+                }
+
+                if (i == 64) {
+                    console.log("Q before addition is:")
+                    console.log(Q.x.c0.toBigInt());
+                    console.log(Q.x.c1.toBigInt());
+                    console.log(Q.y.c0.toBigInt());
+                    console.log(Q.y.c1.toBigInt());
+                }
+
                 let line_eval = Pairing.addition_step(r, Q);
                 r = line_eval.r;
-                f = Pairing.ell(f, line_eval.result, P);
+                let result = line_eval.result;
+                    
+                f = Pairing.ell(f, result, P);
+            
+                if (i == 64) {
+                    console.log("r after addition is:")
+                    console.log(r.x.c0.toBigInt());
+                    console.log(r.x.c1.toBigInt());
+                    console.log(r.y.c0.toBigInt());
+                    console.log(r.y.c1.toBigInt());
+                    console.log(r.z.c0.toBigInt());
+                    console.log(r.z.c1.toBigInt()); 
+
+
+                    console.log("result after addition is:")
+                    console.log(result.x.c0.toBigInt());
+                    console.log(result.x.c1.toBigInt());
+                    console.log(result.y.c0.toBigInt());
+                    console.log(result.y.c1.toBigInt());
+                    console.log(result.z.c0.toBigInt());
+                    console.log(result.z.c1.toBigInt()); 
+
+                    let result_affine = result.to_affine();
+
+                    console.log("result affine coeff1 is:")
+                    console.log(result_affine.x.c0.toBigInt());
+                    console.log(result_affine.x.c1.toBigInt());
+                    console.log(result_affine.y.c0.toBigInt());
+                    console.log(result_affine.y.c1.toBigInt());
+                }   
+                
             }
 
             if (x == -1) {
                 let line_eval = Pairing.addition_step(r, negq);
                 r = line_eval.r;
-                f = Pairing.ell(f, line_eval.result, P);
+                let result = line_eval.result;
+                f = Pairing.ell(f, result, P);
             }
         }
+        
 
         // add those functions
         return f;
         
     }
-
 
     static pair(Q: G2Affine, P: G1Affine) {
         let f = Pairing.miller_loop(Q, P);

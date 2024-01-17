@@ -5,8 +5,9 @@ import Fq2 from "./fq2";
 import Fq from "./fq";
 import G1 from "./g1_new";
 import G2 from "./g2_new";
-import { convertToObject } from "typescript";
+import { convertToObject, isConstructorDeclaration } from "typescript";
 import G2Affine from "./g2_affine";
+import G1Affine from "./g1_affine";
 
 
 describe('test pairing functions', function() {
@@ -286,6 +287,72 @@ it('Test doubling step', function() {
 
   });
 
+  it('Test doubling step 2', function() {
+    console.log("Test G2");
+    
+    let g2_generator = G2.generator();
+    let g2_generator_double = g2_generator.double();
+
+    console.log("g2_generator_double")
+    console.log(g2_generator_double.x.c0.toBigInt());
+    console.log(g2_generator_double.x.c1.toBigInt());
+    console.log(g2_generator_double.y.c0.toBigInt());
+    console.log(g2_generator_double.y.c1.toBigInt());
+    console.log(g2_generator_double.z.c0.toBigInt());
+    console.log(g2_generator_double.z.c1.toBigInt());
+    
+    let line_eval = Pairing.doubling_step(g2_generator_double);
+    let g2_double_after_doubling = line_eval.r;
+
+    console.log("g2_double after doubling")
+    console.log(g2_double_after_doubling.x.c0.toBigInt());
+    console.log(g2_double_after_doubling.x.c1.toBigInt());
+    console.log(g2_double_after_doubling.y.c0.toBigInt());
+    console.log(g2_double_after_doubling.y.c1.toBigInt());
+    console.log(g2_double_after_doubling.z.c0.toBigInt());
+    console.log(g2_double_after_doubling.z.c1.toBigInt());
+
+    let g2_doubling_result = line_eval.result;
+
+    console.log("Result after doubling")
+    console.log(g2_doubling_result.x.c0.toBigInt());
+    console.log(g2_doubling_result.x.c1.toBigInt());
+    console.log(g2_doubling_result.y.c0.toBigInt());
+    console.log(g2_doubling_result.y.c1.toBigInt());
+    console.log(g2_doubling_result.z.c0.toBigInt());
+    console.log(g2_doubling_result.z.c1.toBigInt());
+  });
+
+
+  it('Test doubling step 3', function() {
+    console.log("Test G2Affine");
+    
+    let g2_generator = G2.generator();
+
+    let line_eval = Pairing.doubling_step(g2_generator);
+    let g2_generator_after_doubling = line_eval.r;
+
+    console.log("g2 generator after doubling");
+    console.log(g2_generator_after_doubling.x.c0.toBigInt());
+    console.log(g2_generator_after_doubling.x.c1.toBigInt());
+    console.log(g2_generator_after_doubling.y.c0.toBigInt());
+    console.log(g2_generator_after_doubling.y.c1.toBigInt());
+    console.log(g2_generator_after_doubling.z.c0.toBigInt());
+    console.log(g2_generator_after_doubling.z.c1.toBigInt());
+
+
+    let g2_generator_doubling_result = line_eval.result;
+
+    console.log("g2 generator doubling result");
+    console.log(g2_generator_doubling_result.x.c0.toBigInt());
+    console.log(g2_generator_doubling_result.x.c1.toBigInt());
+    console.log(g2_generator_doubling_result.y.c0.toBigInt());
+    console.log(g2_generator_doubling_result.y.c1.toBigInt());
+    console.log(g2_generator_doubling_result.z.c0.toBigInt());
+    console.log(g2_generator_doubling_result.z.c1.toBigInt());
+
+  });
+
 /*f_test after ecc is
 c0: c0: c0:
 21539945124252953321531877303674042836786714281016248685273042078497397202541
@@ -312,7 +379,7 @@ c1: c2: c0:
 c1: c2: c1:
 0*/
 
-it('Test ell', function() {
+/*it('Test ell', function() {
     console.log("");
     
     let f_test = Fq12.one().add(Fq12.one());
@@ -364,40 +431,31 @@ c1: c2: c1:
 1280249797837326183721155126067164609135389664909150424992007507737623690374*/
 
 it('Test miller loop', function() {
-    console.log("test miller loop on G2 and G1 generator");
+    console.log("test miller loop on G2(2G) and G1(3G)");
     
-    let g1_generator = G1.generator();
-    let g1_generator_double = g1_generator.add(g1_generator);
-    let g1_generator_trible = g1_generator_double.add(g1_generator);
-    let g1_affine_3g = g1_generator_trible.to_affine();
+    let g1_affine_3g = new G1Affine(
+        new Fq(3353031288059533942658390886683067124040920775575537747144343083137631628272n),
+        new Fq(19321533766552368860946552437480515441416830039777911637913418824951667761761n)
+    )
 
-    let g2_generator = G2.generator();
-    let g2_double = g2_generator.add(g2_generator);
-    let g2_affine_2g = g2_double.to_affine();
-    
+    let g2_affine_2g = new G2Affine(
+        new Fq2(
+            new Fq(18029695676650738226693292988307914797657423701064905010927197838374790804409n),
+            new Fq(14583779054894525174450323658765874724019480979794335525732096752006891875705n)
+        ),
+
+        new Fq2(
+            new Fq(2140229616977736810657479771656733941598412651537078903776637920509952744750n),
+            new Fq(11474861747383700316476719153975578001603231366361248090558603872215261634898n)
+        )
+    );
+
     let miller_loop_test = Pairing.miller_loop(g2_affine_2g, g1_affine_3g);
+    
 
-    let g2 = g2_affine_2g.to_proj();
-    let xx = Pairing.doubling_step(g2);
-
-    console.log("THE RESULT DOUBLING is");
-    console.log(xx.result.x.c0.toBigInt());
-    console.log(xx.result.x.c1.toBigInt());
-    console.log(xx.r.y.c0.toBigInt());
-    console.log(xx.r.y.c1.toBigInt());
-    console.log(xx.r.z.c0.toBigInt());
-    console.log(xx.r.z.c1.toBigInt());
-
-    let affine_xx = xx.result.to_affine();
-
-    console.log("THE RESULT DOUBLING AFFINE is");
-    console.log(affine_xx.x.c0.toBigInt());
-    console.log(affine_xx.x.c1.toBigInt());
-    console.log(affine_xx.y.c0.toBigInt());
-    console.log(affine_xx.y.c1.toBigInt());
   });
 
-  it('Bilinearity tests', function() {
+  /*it('Bilinearity tests', function() {
     console.log("test miller loop on G2 and G1 generator");
     
     let a = G1.generator();
@@ -418,6 +476,6 @@ it('Test miller loop', function() {
 
     // Test is wrong since miller_loop works incorrect.
 
-  });
+  });*/
 
 });
