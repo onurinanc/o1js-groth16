@@ -1,4 +1,5 @@
 import Fq from "./fq";
+import G1Affine from "./g1_affine";
 
 export default class G1{   
     x: Fq;
@@ -135,10 +136,9 @@ export default class G1{
         // conditional_select??
 
         // As an affine, let's have z = 0 with G1
-        return new G1(
+        return new G1Affine(
             x,
             y,
-            new Fq(0n)
         )
     }
     

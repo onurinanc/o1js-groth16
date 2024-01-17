@@ -5,6 +5,8 @@ import Fq2 from "./fq2";
 import Fq from "./fq";
 import G1 from "./g1_new";
 import G2 from "./g2_new";
+import { convertToObject } from "typescript";
+import G2Affine from "./g2_affine";
 
 
 describe('test pairing functions', function() {
@@ -189,9 +191,9 @@ G2 z c0
 G2 z c1
 5034616795582565734225936021994665960773476499030844842075241925330862037999*/
 
-  it('Test g1 g2', function() {
+  it('Test addition step', function() {
     console.log("Test g1 affine and projective transform");
-    let g2_affine_3g = new G2(
+    let g2_affine_3g = new G2Affine(
         new Fq2(
             new Fq(2725019753478801796453339367788033689375851816420509565303521482350756874229n),
             new Fq(7273165102799931111715871471550377909735733521218303035754523677688038059653n)
@@ -199,10 +201,6 @@ G2 z c1
         new Fq2(
             new Fq(2512659008974376214222774206987427162027254181373325676825515531566330959255n),
             new Fq(957874124722006818841961785324909313781880061366718538693995380805373202866n)
-        ),
-        new Fq2(
-            new Fq(0n),
-            new Fq(0n)
         )
     )
 
@@ -238,17 +236,187 @@ G2 z c1
     console.log(g2_generator_3g_affine.x.c1.toBigInt());
     console.log(g2_generator_3g_affine.y.c0.toBigInt());
     console.log(g2_generator_3g_affine.y.c1.toBigInt());
-    console.log(g2_generator_3g_affine.z.c0.toBigInt());
-    console.log(g2_generator_3g_affine.z.c1.toBigInt());
     
     let addition_result = Pairing.addition_step(g2_2g, g2_affine_3g);
 
-    console.log(addition_result.x.c0.toBigInt());
+    /*console.log(addition_result.x.c0.toBigInt());
     console.log(addition_result.x.c1.toBigInt());
     console.log(addition_result.y.c0.toBigInt());
     console.log(addition_result.y.c1.toBigInt());
     console.log(addition_result.z.c0.toBigInt());
-    console.log(addition_result.z.c1.toBigInt());
+    console.log(addition_result.z.c1.toBigInt());*/
+
+  });
+
+/*doubling result doubling_step(2 * G)
+G2 x c0
+15907470672758763390522514767003803497931353299914271700526213920442476042295
+G2 x c1
+20783224935215815488584337979997070790192642887381753011555001201094594645160
+G2 y c0
+534563814371495978974146195478125326052207300123260898857011675883367199460
+G2 y c1
+7451553101180931993360714965623705913038106028499313570088137992249185208430
+G2 z c0
+587737556357335807751429292753855402511169724545807108531042764320320964969
+G2 z c1
+7851120854422305789899027307305441383200543189437963269032829892620510819590*/
+
+it('Test doubling step', function() {
+    console.log("doubling_step(2 * G) comparison test");
+    
+    let g2_generator = G2.generator();
+
+    console.log(g2_generator.x.c0.toBigInt());
+    console.log(g2_generator.x.c1.toBigInt());
+    console.log(g2_generator.y.c0.toBigInt());
+    console.log(g2_generator.y.c1.toBigInt());
+    console.log(g2_generator.z.c0.toBigInt());
+    console.log(g2_generator.z.c1.toBigInt());
+    
+    let g2_generator_double = g2_generator.double();
+    let g2_doubling_step_result = Pairing.doubling_step(g2_generator_double);
+
+    /*console.log(g2_doubling_step_result.result.x.c0.toBigInt());
+    console.log(g2_doubling_step_result.x.c1.toBigInt());
+    console.log(g2_doubling_step_result.y.c0.toBigInt());
+    console.log(g2_doubling_step_result.y.c1.toBigInt());
+    console.log(g2_doubling_step_result.z.c0.toBigInt());
+    console.log(g2_doubling_step_result.z.c1.toBigInt());*/
+
+  });
+
+/*f_test after ecc is
+c0: c0: c0:
+21539945124252953321531877303674042836786714281016248685273042078497397202541
+c0: c0: c1:
+2462442388266997987471204595054592958310629132689122798291536816519114805370
+c0: c1: c0:
+0
+c0: c1: c1:
+0
+c0: c2: c0:
+0
+c0: c2: c1:
+0
+c1: c0: c0:
+16991307846246862835209946494978544876836381174527200297540561298613916203860
+c1: c0: c1:
+8164735751726867362664406806290871136633702655186802416211482152428240187062
+c1: c1: c0:
+2
+c1: c1: c1:
+0
+c1: c2: c0:
+0
+c1: c2: c1:
+0*/
+
+it('Test ell', function() {
+    console.log("");
+    
+    let f_test = Fq12.one().add(Fq12.one());
+    let coeff_test = G2.generator();
+    let p_test = G1.generator().to_affine();
+
+    let f_res = Pairing.ell(f_test, coeff_test, p_test);
+    
+    console.log("The multiplication result is:");
+    console.log(f_res.c0.c0.c0.toBigInt());
+    console.log(f_res.c0.c0.c1.toBigInt());
+    console.log(f_res.c0.c1.c0.toBigInt());
+    console.log(f_res.c0.c1.c1.toBigInt());
+    console.log(f_res.c0.c2.c0.toBigInt());
+    console.log(f_res.c0.c2.c1.toBigInt());
+    console.log(f_res.c1.c0.c0.toBigInt());
+    console.log(f_res.c1.c0.c1.toBigInt());
+    console.log(f_res.c1.c1.c0.toBigInt());
+    console.log(f_res.c1.c1.c1.toBigInt());
+    console.log(f_res.c1.c2.c0.toBigInt());
+    console.log(f_res.c1.c2.c1.toBigInt());
+
+  });
+
+/*Result of the miller loop is:
+c0: c0: c0:
+8435349465297435165939613326182510559432768151171456927563845943835587893318
+c0: c0: c1:
+6922971044582888302935485344122945678712627252066050934761503002215637833398
+c0: c1: c0:
+3020546541473938793128002451374960532067818205039443099811129595927388067286
+c0: c1: c1:
+17769323050513707778517677686953418267091010046392128507544477374469625612984
+c0: c2: c0:
+3763732934528536011745626858778706370427043921669046010442849159497712700772
+c0: c2: c1:
+14549845357758960899323156041109965068703251629332557195387415594452856987644
+c1: c0: c0:
+6794473403739122020442363891712360649335653313810088419703280842965192069511
+c1: c0: c1:
+13392128610088202061854730384851289230662074442107826208219257402048685222537
+c1: c1: c0:
+7433825691721511851102122167239491011947119642840494065360783975919138076820
+c1: c1: c1:
+19219766045438315144692585480887046659586273909639508979936361306434866171983
+c1: c2: c0:
+21644873758654527024745287033018303248224386386103324977073303408472355346721
+c1: c2: c1:
+1280249797837326183721155126067164609135389664909150424992007507737623690374*/
+
+it('Test miller loop', function() {
+    console.log("test miller loop on G2 and G1 generator");
+    
+    let g1_generator = G1.generator();
+    let g1_generator_double = g1_generator.add(g1_generator);
+    let g1_generator_trible = g1_generator_double.add(g1_generator);
+    let g1_affine_3g = g1_generator_trible.to_affine();
+
+    let g2_generator = G2.generator();
+    let g2_double = g2_generator.add(g2_generator);
+    let g2_affine_2g = g2_double.to_affine();
+    
+    let miller_loop_test = Pairing.miller_loop(g2_affine_2g, g1_affine_3g);
+
+    let g2 = g2_affine_2g.to_proj();
+    let xx = Pairing.doubling_step(g2);
+
+    console.log("THE RESULT DOUBLING is");
+    console.log(xx.result.x.c0.toBigInt());
+    console.log(xx.result.x.c1.toBigInt());
+    console.log(xx.r.y.c0.toBigInt());
+    console.log(xx.r.y.c1.toBigInt());
+    console.log(xx.r.z.c0.toBigInt());
+    console.log(xx.r.z.c1.toBigInt());
+
+    let affine_xx = xx.result.to_affine();
+
+    console.log("THE RESULT DOUBLING AFFINE is");
+    console.log(affine_xx.x.c0.toBigInt());
+    console.log(affine_xx.x.c1.toBigInt());
+    console.log(affine_xx.y.c0.toBigInt());
+    console.log(affine_xx.y.c1.toBigInt());
+  });
+
+  it('Bilinearity tests', function() {
+    console.log("test miller loop on G2 and G1 generator");
+    
+    let a = G1.generator();
+    let b = G2.generator();
+
+    let ac = a.add(a).add(a).add(a);
+    let ad = a.add(a).add(a);
+
+    let bc = b.add(b).add(b).add(b);
+    let bd = b.add(b).add(b);
+
+    let acbd = Pairing.pair(bd.to_affine(), ac.to_affine());
+    let adbc = Pairing.pair(bc.to_affine(), ad.to_affine());
+
+    console.log("Bilinearity test...")
+    console.log(acbd.c0.c0.c0.toBigInt());
+    console.log(adbc.c0.c0.c0.toBigInt());
+
+    // Test is wrong since miller_loop works incorrect.
 
   });
 

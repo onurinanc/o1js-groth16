@@ -2,6 +2,21 @@ import G1 from './g1_new';
 import G2 from './g2_new';
 import Fq12 from './fq12';
 import Fq6 from './fq6';
+import Fq2 from './fq2';
+import Fq from './fq';
+import G1Affine from './g1_affine';
+import G2Affine from './g2_affine';
+import { convertToObject, resolveModuleName } from 'typescript';
+
+class LineEval {
+    r: G2
+    result: G2
+
+    constructor(r: G2, result: G2) {
+        this.r = r;
+        this.result = result;
+    }
+}
 
 export default class Pairing{
 
@@ -21,6 +36,11 @@ export default class Pairing{
         1, 1, 1, 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, -1, 0, 0, 1, 1, 0, 0, -1, 0, 0, 0, 1, 1, 0, -1, 0,
         0, 1, 0, 1, 1,
     ];
+
+    static XI_TO_Q_MINUS_1_OVER_2 = new Fq2(
+        new Fq(2821565182194536844548159561693502659359617185244120367078079554186484126554n),
+        new Fq(3505843767911556378687030309984248845540243509899259641013678093033130930403n)
+    );
 
     static final_exponentiation(r: Fq12) {
         let f1 = r;
@@ -119,7 +139,7 @@ export default class Pairing{
         return t0;
     } 
 
-    // haven't test it yet.
+    // Tested.
     static doubling_step(r: G2) {
         let tmp0 = r.x;
         tmp0 = tmp0.square();
@@ -148,13 +168,16 @@ export default class Pairing{
         tmp5 = tmp5.square();
 
         let zsquared = r.z;
-        zsquared = zsquared.square();
+        zsquared = zsquared.square(); // zsquared is correct.
 
         let cx = tmp5;
         cx = cx.sub(tmp3);
         cx = cx.sub(tmp3);
 
-        let cz = r.y;
+        //let cz = r.y; // This is wrong.
+        
+        
+        let cz = r.z.add(r.y);
         cz = cz.square();
         cz = cz.sub(tmp1);
         cz = cz.sub(zsquared);
@@ -169,6 +192,8 @@ export default class Pairing{
 
         cy = cy.sub(tmp2);
 
+        // It is correct up to here.
+
         tmp3 = tmp4;
         tmp3 = tmp3.mul(zsquared);
         tmp3 = tmp3.double();
@@ -182,23 +207,30 @@ export default class Pairing{
         tmp1 = tmp1.double();
 
         tmp6 = tmp6.sub(tmp1);
-
+        
         tmp0 = cz;
         tmp0 = tmp0.mul(zsquared);
         tmp0 = tmp0.double();
 
-        return new G2(
-            tmp0,
-            tmp3,
-            tmp6
+
+        return new LineEval(
+            new G2(
+                cx,
+                cy,
+                cz
+            ),
+            new G2(
+                tmp0,
+                tmp3,
+                tmp6
+            )
         );
         
     }
 
     // Burada, q_affine G2 Affine olacak. Ben bunu direk G2 olarak aldım.
-    // * Test edilmedi
-    // * Test ederken affine olduğuna özen göster.
-    static addition_step(r: G2, q_affine: G2) {
+    // Tested.
+    static addition_step(r: G2, q_affine: G2Affine) {
         let zsquared = r.z;
         zsquared = zsquared.square();
 
@@ -283,29 +315,82 @@ export default class Pairing{
         t1 = t6;
         t1 = t1.double();
 
-        return new G2(
-            t10,
-            t1,
-            t9
+        
+
+        return new LineEval(
+            new G2(
+                cx,
+                cy,
+                cz
+            ),
+            new G2(
+                t10,
+                t1,
+                t9
+            )
         );
+
+        
     }
 
-    // doubling_step
-    // addition_step
-    // bunlara test yapmamız gerekiyor.
+    static ell(f: Fq12, coeff: G2, p_affine: G1Affine) {
+        let c0 = coeff.x;
+        let c1 = coeff.y;
 
-    // G2Affine oluşturup buna belirli özellikler verebiliriz.
-    // Zaten doubling veya ddition işlemleri yapmayacağız.
+        c0.c0 = c0.c0.mul(p_affine.y);
+        c0.c1 = c0.c1.mul(p_affine.y);
 
-    // from_affine diye bir fonksiyon yok ama?
-    // from_affine olursa 
+        c1.c0 = c1.c0.mul(p_affine.x);
+        c1.c1 = c1.c1.mul(p_affine.x);
 
-    miller_loop(Q: G2, P:G1) {
-        let r = Q; // burada direk Q affine yerine böyle aldık
-
+        let res_f = f.mul_by_034(c0, c1, coeff.z); // ???
+        return res_f;
     }
 
-    static pair(Q: G2, P: G1) {
+    static miller_loop(Q: G2Affine, P: G1Affine) {
+        let f = Fq12.one();
+        let r = Q.to_proj();
 
+        let negq = new G2Affine(
+            Q.x,
+            Q.y.neg()
+        );
+
+        for (let i = 64; i > 0; i--) {
+            console.log(i);
+            if (i != 64) {
+                f = f.square();
+            }
+
+            let line_eval = Pairing.doubling_step(r);
+            r = line_eval.r;           
+            f = Pairing.ell(f, line_eval.result, P);
+
+            let x = Pairing.SIX_U_PLUS_2_NAF[i - 1];
+
+            if (x == 1) {
+
+                let line_eval = Pairing.addition_step(r, Q);
+                r = line_eval.r;
+                f = Pairing.ell(f, line_eval.result, P);
+            }
+
+            if (x == -1) {
+                let line_eval = Pairing.addition_step(r, negq);
+                r = line_eval.r;
+                f = Pairing.ell(f, line_eval.result, P);
+            }
+        }
+
+        // add those functions
+        return f;
+        
+    }
+
+
+    static pair(Q: G2Affine, P: G1Affine) {
+        let f = Pairing.miller_loop(Q, P);
+        f = Pairing.final_exponentiation(f);
+        return f;
     }
 }
