@@ -451,7 +451,19 @@ it('Test miller loop', function() {
     );
 
     let miller_loop_test = Pairing.miller_loop(g2_affine_2g, g1_affine_3g);
-    
+    console.log("miller loop result");
+    console.log(miller_loop_test.c0.c0.c0.toBigInt());
+    console.log(miller_loop_test.c0.c0.c1.toBigInt());
+    console.log(miller_loop_test.c0.c1.c0.toBigInt());
+    console.log(miller_loop_test.c0.c1.c1.toBigInt());
+    console.log(miller_loop_test.c0.c2.c0.toBigInt());
+    console.log(miller_loop_test.c0.c2.c1.toBigInt());
+    console.log(miller_loop_test.c1.c0.c0.toBigInt());
+    console.log(miller_loop_test.c1.c0.c1.toBigInt());
+    console.log(miller_loop_test.c1.c1.c0.toBigInt());
+    console.log(miller_loop_test.c1.c1.c1.toBigInt());
+    console.log(miller_loop_test.c1.c2.c0.toBigInt());
+    console.log(miller_loop_test.c1.c2.c1.toBigInt());
 
   });
 

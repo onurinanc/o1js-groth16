@@ -88,11 +88,11 @@ describe('test G1 for BN254', function() {
 
     console.log(res_affine.x.toBigInt());
     console.log(res_affine.y.toBigInt());
-    console.log(res_affine.z.toBigInt());
+    //console.log(res_affine.z.toBigInt());
 
     console.log(g_3_1_jacob_affine.x.toBigInt());
     console.log(g_3_1_jacob_affine.y.toBigInt());
-    console.log(g_3_1_jacob_affine.z.toBigInt());
+    //console.log(g_3_1_jacob_affine.z.toBigInt());
   });
 
 });
