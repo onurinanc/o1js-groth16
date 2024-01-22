@@ -78,7 +78,7 @@ describe('test G2 for BN254', function() {
     let g2_generator = G2.generator();
     let g2_generator_tw0 = g2_generator.add(g2_generator);
     let g2_generator_double = g2_generator_tw0.double();
-    g2_generator_double = g2_generator_double.to_affine();
+    //g2_generator_double = g2_generator_double.to_affine();
 
     console.log(g2_generator_double.x.c0.toBigInt());
     console.log(g2_generator_double.x.c1.toBigInt());
@@ -96,7 +96,7 @@ describe('test G2 for BN254', function() {
     let g2_generator = G2.generator();
     let g2_generator_tw0 = g2_generator.double();
     let g2_generator_double = g2_generator_tw0.double();
-    g2_generator_double = g2_generator_double.to_affine();
+    //g2_generator_double = g2_generator_double.to_affine();
 
     console.log(g2_generator_double.x.c0.toBigInt());
     console.log(g2_generator_double.x.c1.toBigInt());

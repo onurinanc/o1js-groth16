@@ -549,10 +549,6 @@ export default class Pairing{
             Q.y.neg()
         );
 
-        console.log("P İS")
-        console.log(P.x.toBigInt());
-        console.log(P.y.toBigInt());
-
         for (let i = 64; i > 0; i--) {
             if (i != 64) {
                 f = f.square();
@@ -562,69 +558,29 @@ export default class Pairing{
             r = line_eval.r;  
             let result = line_eval.result;
             // Buraya kadar doğru
-            
-            /*
-                change the result in here
-            */
+
+
             f = Pairing.ell(f, result, P);
-            result.x.c0 = result.x.c0.mul(P.y);
+            /*result.x.c0 = result.x.c0.mul(P.y);
             result.x.c1 = result.x.c1.mul(P.y);
 
             result.y.c0 = result.x.c0.mul(P.x);
-            result.y.c1 = result.x.c1.mul(P.x);
+            result.y.c1 = result.x.c1.mul(P.x);*/
 
             let x = Pairing.SIX_U_PLUS_2_NAF[i - 1];
 
             if (x == 1) {
-
-                
-                if (i == 64) {
-                    console.log("r before addition is:")
-                    console.log(r.x.c0.toBigInt());
-                    console.log(r.x.c1.toBigInt());
-                    console.log(r.y.c0.toBigInt());
-                    console.log(r.y.c1.toBigInt());
-                    console.log(r.z.c0.toBigInt());
-                    console.log(r.z.c1.toBigInt()); 
-                }
-
-                if (i == 64) {
-                    console.log("Q before addition is:")
-                    console.log(Q.x.c0.toBigInt());
-                    console.log(Q.x.c1.toBigInt());
-                    console.log(Q.y.c0.toBigInt());
-                    console.log(Q.y.c1.toBigInt());
-                }
 
                 let line_eval = Pairing.addition_step(r, Q);
                 r = line_eval.r;
                 let result = line_eval.result;
                     
                 f = Pairing.ell(f, result, P);                
-                result.x.c0 = result.x.c0.mul(P.y);
+                /*result.x.c0 = result.x.c0.mul(P.y);
                 result.x.c1 = result.x.c1.mul(P.y);
 
                 result.y.c0 = result.x.c0.mul(P.x);
-                result.y.c1 = result.x.c1.mul(P.x);
-            
-                if (i == 64) {
-                    console.log("r after addition is:")
-                    console.log(r.x.c0.toBigInt());
-                    console.log(r.x.c1.toBigInt());
-                    console.log(r.y.c0.toBigInt());
-                    console.log(r.y.c1.toBigInt());
-                    console.log(r.z.c0.toBigInt());
-                    console.log(r.z.c1.toBigInt()); 
-
-
-                    console.log("result after addition is:")
-                    console.log(result.x.c0.toBigInt());
-                    console.log(result.x.c1.toBigInt());
-                    console.log(result.y.c0.toBigInt());
-                    console.log(result.y.c1.toBigInt());
-                    console.log(result.z.c0.toBigInt());
-                    console.log(result.z.c1.toBigInt()); 
-                }   
+                result.y.c1 = result.x.c1.mul(P.x);*/
                 
             }
 
@@ -633,14 +589,101 @@ export default class Pairing{
                 r = line_eval.r;
                 let result = line_eval.result;
                 f = Pairing.ell(f, result, P);
-                result.x.c0 = result.x.c0.mul(P.y);
+                /*result.x.c0 = result.x.c0.mul(P.y);
                 result.x.c1 = result.x.c1.mul(P.y);
 
                 result.y.c0 = result.x.c0.mul(P.x);
-                result.y.c1 = result.x.c1.mul(P.x);
+                result.y.c1 = result.x.c1.mul(P.x);*/
             }
         }
 
+        // f after loop is correct.
+        // add those functions
+        console.log("Q after loop is:")
+        console.log(Q.x.c0.toBigInt());
+        console.log(Q.x.c1.toBigInt());
+        console.log(Q.y.c0.toBigInt());
+        console.log(Q.y.c1.toBigInt());
+        
+        let x_c0 = Q.x.c0;
+        let x_c1 = Q.x.c1;
+        let y_c0 = Q.y.c0;
+        let y_c1 = Q.y.c1;
+
+        let q1 = new G2Affine(
+            new Fq2(
+                x_c0,
+                x_c1
+            ),
+            new Fq2(
+                y_c0,
+                y_c1
+            )
+        );
+
+        q1.x.c1 = q1.x.c1.neg();
+
+        q1.x = q1.x.mul(new Fq2(
+            new Fq(21575463638280843010398324269430826099269044274347216827212613867836435027261n),
+            new Fq(10307601595873709700152284273816112264069230130616436755625194854815875713954n)
+        ));
+
+        q1.y.c1 = q1.y.c1.neg();
+        q1.y = q1.y.mul(this.XI_TO_Q_MINUS_1_OVER_2);
+
+        console.log("Q1 is:")
+        console.log(q1.x.c0.toBigInt());
+        console.log(q1.x.c1.toBigInt());
+        console.log(q1.y.c0.toBigInt());
+        console.log(q1.y.c1.toBigInt());
+
+        // does it work correctly?
+        let line_eval = Pairing.addition_step(r, q1);
+        r = line_eval.r;
+        let result = line_eval.result;
+
+        f = Pairing.ell(f, result, P);
+        result.x.c0 = result.x.c0.mul(P.y);
+        result.x.c1 = result.x.c1.mul(P.y);
+
+        result.y.c0 = result.x.c0.mul(P.x);
+        result.y.c1 = result.x.c1.mul(P.x);
+
+        let minusq2 = Q;
+        minusq2.x = minusq2.x.mul(
+            new Fq2(
+                new Fq(21888242871839275220042445260109153167277707414472061641714758635765020556616n),
+                new Fq(0n)
+            )
+        );
+
+        console.log("minusq2 is:")
+        console.log(minusq2.x.c0.toBigInt());
+        console.log(minusq2.x.c1.toBigInt());
+        console.log(minusq2.y.c0.toBigInt());
+        console.log(minusq2.y.c1.toBigInt());
+
+        line_eval = Pairing.addition_step(r, minusq2);
+        r = line_eval.r;
+        result = line_eval.result;
+
+        f = Pairing.ell(f, result, P);
+        console.log("r after loop is:")
+        console.log(r.x.c0.toBigInt());
+        console.log(r.x.c1.toBigInt());
+        console.log(r.y.c0.toBigInt());
+        console.log(r.y.c1.toBigInt());
+        console.log(r.z.c0.toBigInt());
+        console.log(r.z.c1.toBigInt());
+
+
+        console.log("Q after loop is:")
+        console.log(Q.x.c0.toBigInt());
+        console.log(Q.x.c1.toBigInt());
+        console.log(Q.y.c0.toBigInt());
+        console.log(Q.y.c1.toBigInt());
+
+        
         return f;
         
     }
@@ -692,38 +735,11 @@ export default class Pairing{
                 let result = line_eval.result;
                 f = f.mul_by_034(result.x, result.y, result.z);
             }
-
-            let q1 = Q;
-            q1.x.c1 = q1.x.c1.neg();
-            q1.x = q1.x.frobenius_map(1n).mul(q1.x);
-
-            q1.y.c1 = q1.y.c1.neg();
-            q1.y = q1.y.mul(this.XI_TO_Q_MINUS_1_OVER_2);
-
-            let line_eval_0 = this.addition_step_with_p(r, q1, P);
-            r = line_eval_0.r;
-            result = line_eval.result;
-
-            f = f.mul_by_034(result.x, result.y, result.z);
-
         }
 
         return f;
 
     }
-
-    /*q1.x.c1 = q1.x.c1.neg();
-        q1.x.mul_assign(&FROBENIUS_COEFF_FQ6_C1[1]);
-
-        q1.y.c1 = q1.y.c1.neg();
-        q1.y.mul_assign(&XI_TO_Q_MINUS_1_OVER_2);
-
-        coeffs.push(addition_step(&mut r, &q1));
-
-        let mut minusq2 = q;
-        minusq2.x.mul_assign(&FROBENIUS_COEFF_FQ6_C1[2]);
-
-        coeffs.push(addition_step(&mut r, &minusq2));*/
 
     static pair(Q: G2Affine, P: G1Affine) {
         let f = Pairing.miller_loop(Q, P);

@@ -467,7 +467,7 @@ it('Test miller loop', function() {
 
   });
 
-  /*it('Bilinearity tests', function() {
+  it('Bilinearity test 1', function() {
     console.log("test miller loop on G2 and G1 generator");
     
     let a = G1.generator();
@@ -485,9 +485,70 @@ it('Test miller loop', function() {
     console.log("Bilinearity test...")
     console.log(acbd.c0.c0.c0.toBigInt());
     console.log(adbc.c0.c0.c0.toBigInt());
+  });
 
-    // Test is wrong since miller_loop works incorrect.
 
-  });*/
+  it('Bilinearity test 2', function() {
+    console.log("test miller loop on G2 and G1 generator");
+    
+    let a = G1.generator();
+    let b = G2.generator();
+
+    let ac = a.add(a).add(a).add(a).add(a);
+    let ad = a.add(a).add(a);
+
+    let bc = b.add(b).add(b).add(b).add(b);
+    let bd = b.add(b).add(b);
+
+    let acbd = Pairing.pair(bd.to_affine(), ac.to_affine());
+    let adbc = Pairing.pair(bc.to_affine(), ad.to_affine());
+
+    console.log("Bilinearity test...")
+    console.log(acbd.c0.c0.c0.toBigInt());
+    console.log(adbc.c0.c0.c0.toBigInt());
+  });
+
+  // e(P, Q + R) = e(P, Q) * e(P, R)
+  it('Bilinearity test 2', function() {
+    console.log("test miller loop on G2 and G1 generator");
+    
+    let P = G1.generator();
+    let Q = G2.generator();
+    
+    let p_q_plus_r = Pairing.pair(Q.add(Q).to_affine(), P.to_affine());
+    let p_q = Pairing.pair(Q.to_affine(), P.to_affine());
+    let p_r = Pairing.pair(Q.to_affine(), P.to_affine());
+
+    let p_q_mul_p_r = p_q.mul(p_r);
+
+    console.log("Bilinearity test...")
+    console.log("e(P, Q + R) is: ");
+    console.log(p_q_plus_r.c0.c0.c0.toBigInt());
+    console.log(p_q_plus_r.c0.c0.c1.toBigInt());
+    console.log(p_q_plus_r.c0.c1.c0.toBigInt());
+    console.log(p_q_plus_r.c0.c1.c1.toBigInt());
+    console.log(p_q_plus_r.c0.c2.c0.toBigInt());
+    console.log(p_q_plus_r.c0.c2.c1.toBigInt());
+    console.log(p_q_plus_r.c1.c0.c0.toBigInt());
+    console.log(p_q_plus_r.c1.c0.c1.toBigInt());
+    console.log(p_q_plus_r.c1.c1.c0.toBigInt());
+    console.log(p_q_plus_r.c1.c1.c1.toBigInt());
+    console.log(p_q_plus_r.c1.c2.c0.toBigInt());
+    console.log(p_q_plus_r.c1.c2.c1.toBigInt());
+
+    console.log("e(P, Q) * e(P, R)");
+    console.log(p_q_mul_p_r.c0.c0.c0.toBigInt());
+    console.log(p_q_mul_p_r.c0.c0.c1.toBigInt());
+    console.log(p_q_mul_p_r.c0.c1.c0.toBigInt());
+    console.log(p_q_mul_p_r.c0.c1.c1.toBigInt());
+    console.log(p_q_mul_p_r.c0.c2.c0.toBigInt());
+    console.log(p_q_mul_p_r.c0.c2.c1.toBigInt());
+    console.log(p_q_mul_p_r.c1.c0.c0.toBigInt());
+    console.log(p_q_mul_p_r.c1.c0.c1.toBigInt());
+    console.log(p_q_mul_p_r.c1.c1.c0.toBigInt());
+    console.log(p_q_mul_p_r.c1.c1.c1.toBigInt());
+    console.log(p_q_mul_p_r.c1.c2.c0.toBigInt());
+    console.log(p_q_mul_p_r.c1.c2.c1.toBigInt());
+  });
 
 });

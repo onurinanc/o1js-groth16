@@ -139,10 +139,16 @@ export default class Fq{
     }  
     
     // need test for this
-    neg() {
+    
+    /*neg() {
         return new Fq(
             Field3.toBigint(ForeignField.sub(Field3.from(0n), this.value, this.modulus))
         );
+    }*/
+    neg() {
+        return new Fq(
+            Field3.toBigint(ForeignField.sub(Field3.from(this.modulus), this.value, this.modulus))
+        )
     }
 
     static zero() {
